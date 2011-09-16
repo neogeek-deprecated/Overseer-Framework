@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 64, 2011-09-15 22:35:29
+ Overseer Framework, build 65, 2011-09-15 23:13:40
  
  Copyright (c) 2011 Neo Geek
  Dual-licensed under both MIT and BSD licenses.
@@ -31,8 +31,8 @@
 /**
  * check_referer
  * Checks the HTTP_REFERER server variable against the current or specified page.
- * @method boolean check_referer(string $url);
- * @param string $url
+ * @method boolean check_referer([string $url]);
+ * @param string $url (optional)
  * @return boolean
  * @example check_referer();
  * @example check_referer('/contact/');
