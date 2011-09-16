@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 63, 2011-09-13 20:01:58
+ Overseer Framework, build 64, 2011-09-15 22:35:29
  
  Copyright (c) 2011 Neo Geek
  Dual-licensed under both MIT and BSD licenses.
@@ -27,6 +27,22 @@
  
 ------------------------------------------------------------ */
 
+
+/**
+ * check_referer
+ * Checks the HTTP_REFERER server variable against the current or specified page.
+ * @method boolean check_referer(string $url);
+ * @param string $url
+ * @return boolean
+ * @example check_referer();
+ * @example check_referer('/contact/');
+ * @author Neo Geek <neo@neo-geek.net>
+ * @copyright Copyright (c) 2011, Neo Geek
+ */
+
+function check_referer($url = '') {
+	return isset($_SERVER['HTTP_REFERER'])?strpos($_SERVER['HTTP_REFERER'], $url?$url:$_SERVER['REQUEST_URI']) !== false:false;
+}
 
 /**
  * fetch_remote_file
@@ -114,11 +130,8 @@ if (!function_exists('getbrowser')) {
 if (!function_exists('getcsv')) {
 	
 	function getcsv($string) {
-		
 		if (is_file($string)) { $string = file_get_contents($string); }
-		
 		return array_map('str_getcsv', explode(PHP_EOL, $string));
-		
 	}
 	
 }
