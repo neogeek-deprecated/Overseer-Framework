@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 66, 2011-09-15 23:38:26
+ Overseer Framework, build 67, 2011-10-08 15:35:39
  http://overseerframework.com/
  
  Copyright (c) 2011 Neo Geek
@@ -452,6 +452,76 @@ if (!class_exists('DOM')) {
 		function remove($object) {
 			if (is_object($object)) { return $object->parentNode->removeChild($object); }
 			return false;
+		}
+		
+	}
+	
+}
+
+/**
+ * OAuth 2.0
+ * A simple PHP class for establishing OAuth 2.0 connections.
+ * @author Neo Geek <neo@neo-geek.net>
+ * @copyright Copyright (c) 2011, Neo Geek
+ */
+
+if (!class_exists('OAuth')) {
+	
+	class OAuth
+	{
+		
+		var $consumer_key;
+		var $consumer_secret;
+		var $oauth_token;
+		var $oauth_verifier;
+		
+		/**
+		 * __construct
+		 * Sets up a new OAuth object.
+		 * @method object OAuth(string $consumer_key, string $consumer_secret);
+		 * @param string $consumer_key
+		 * @param string $consumer_secret
+		 * @return object
+		 * @example $OAuth = new OAuth('CONSUMER_KEY', 'CONSUMER_SECRET');
+		 * @author Neo Geek <neo@neo-geek.net>
+		 * @copyright Copyright (c) 2011, Neo Geek
+		 */
+		
+		function __construct($consumer_key, $consumer_secret) {
+			$this->consumer_key = $consumer_key;
+			$this->consumer_secret = $consumer_secret;
+		}
+		
+		/**
+		 * request
+		 * Returns the results of an OAuth request.
+		 * @method string request(string $url [, string $callback, string $parts]);
+		 * @param string $url
+		 * @param string $callback (optional)
+		 * @param string $parts (optional)
+		 * @return string
+		 * @example echo $OAuth->request('http://api.site.com/', 'http://domain.com/callback.php');
+		 * @author Neo Geek <neo@neo-geek.net>
+		 * @copyright Copyright (c) 2011, Neo Geek
+		 */
+		
+		function request($url, $callback = null, $parts = '') {
+			
+			if ($callback) { $parts .= 'oauth_callback=' . urlencode($callback); }
+			$parts .= '&oauth_consumer_key=' . $this->consumer_key;
+			$parts .= '&oauth_nonce=' . md5(microtime().mt_rand());
+			$parts .= '&oauth_signature_method=HMAC-SHA1';
+			if ($this->oauth_token) { $parts .= '&oauth_token=' . $this->oauth_token; }
+			$parts .= '&oauth_timestamp=' . time();
+			if ($this->oauth_verifier) { $parts .= '&oauth_verifier=' . $this->oauth_verifier; }
+			$parts .= '&oauth_version=1.0';
+			
+			$signature = implode('&', array('GET', rawurlencode($url), rawurlencode($parts)));
+			
+			$parts .= '&oauth_signature=' . urlencode(base64_encode(hash_hmac('sha1', $signature, $this->consumer_secret . '&', true)));
+			
+			return fetch_remote_file($url . '?' . $parts);
+			
 		}
 		
 	}
