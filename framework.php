@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 67, 2011-10-08 15:35:39
+ Overseer Framework, build 68, 2011-10-10 19:06:32
  http://overseerframework.com/
  
  Copyright (c) 2011 Neo Geek
@@ -136,7 +136,7 @@ if (!function_exists('getcsv')) {
 	
 	function getcsv($string) {
 		if (is_file($string)) { $string = file_get_contents($string); }
-		return array_map('str_getcsv', explode(PHP_EOL, $string));
+		return array_map('str_getcsv', preg_split('/\n|\r+/', $string, null, PREG_SPLIT_NO_EMPTY));
 	}
 	
 }
