@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 68, 2011-10-10 19:06:32
+ Overseer Framework, build 69, 2011-10-29 17:23:25
  http://overseerframework.com/
  
  Copyright (c) 2011 Neo Geek
@@ -360,7 +360,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function create($tag = '', $content = null, $attribs = array()) {
+		public function create($tag = '', $content = null, $attribs = array()) {
 			$element = $this->createElement($tag);
 			if (is_object($content)) { $element->appendChild($content); } else { $element->appendChild($this->createTextNode((string)$content)); }
 			foreach ($attribs as $key => $value) { $element->setAttribute((is_string($key)?$key:(string)$value), $value!==null?(string)$value:null); }
@@ -378,7 +378,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function getElementById($name = '') {
+		public function getElementById($name = '') {
 			if ($element = parent::getElementById($name)) { return $element; } else {
 				$elements = $this->getElementsByTagName('*');
 				foreach ($elements as $element) {
@@ -399,7 +399,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function import($string = '') {
+		public function import($string = '') {
 			$element = $this->createDocumentFragment();
 			$element->appendXML($string);
 			return $element;
@@ -417,7 +417,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function nextSiblings($object, $num = 1) {
+		public function nextSiblings($object, $num = 1) {
 			while ($num) { $object = $object->nextSibling; $num--; }
 			return $object;
 		}
@@ -434,7 +434,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function prependChild($object, $node) {
+		public function prependChild($object, $node) {
 			$node->parentNode->insertBefore($object, $node);
 		}
 		
@@ -449,7 +449,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function remove($object) {
+		public function remove($object) {
 			if (is_object($object)) { return $object->parentNode->removeChild($object); }
 			return false;
 		}
@@ -459,8 +459,8 @@ if (!class_exists('DOM')) {
 }
 
 /**
- * OAuth 2.0
- * A simple PHP class for establishing OAuth 2.0 connections.
+ * OAuth
+ * A simple PHP class for establishing OAuth connections.
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2011, Neo Geek
  */
@@ -470,10 +470,10 @@ if (!class_exists('OAuth')) {
 	class OAuth
 	{
 		
-		var $consumer_key;
-		var $consumer_secret;
-		var $oauth_token;
-		var $oauth_verifier;
+		public $consumer_key;
+		public $consumer_secret;
+		public $oauth_token;
+		public $oauth_verifier;
 		
 		/**
 		 * __construct
@@ -505,7 +505,7 @@ if (!class_exists('OAuth')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		function request($url, $callback = null, $parts = '') {
+		public function request($url, $callback = null, $parts = '') {
 			
 			if ($callback) { $parts .= 'oauth_callback=' . urlencode($callback); }
 			$parts .= '&oauth_consumer_key=' . $this->consumer_key;
