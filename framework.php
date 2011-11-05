@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 69, 2011-10-29 17:23:25
+ Overseer Framework, build 70, 2011-11-05 18:20:17
  http://overseerframework.com/
  
  Copyright (c) 2011 Neo Geek
@@ -440,17 +440,20 @@ if (!class_exists('DOM')) {
 		
 		/**
 		 * remove
-		 * Removes an HTML DOM element.
+		 * Removes one or more HTML DOM elements.
 		 * @method boolean remove(object $object);
 		 * @param object $object
 		 * @return boolean
 		 * @example $DOM->remove($DOM->getElementById('demo'));
+		 * @example $DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
 		public function remove($object) {
-			if (is_object($object)) { return $object->parentNode->removeChild($object); }
+			if (isset($object->length)) {
+				while ($object->length) { $this->remove($object->item($object->length -1)); }
+			} else if (is_object($object)) { return $object->parentNode->removeChild($object); }
 			return false;
 		}
 		
