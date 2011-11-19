@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 70, 2011-11-05 18:20:17
+ Overseer Framework, build 71, 2011-11-19 17:24:58
  http://overseerframework.com/
  
  Copyright (c) 2011 Neo Geek
@@ -328,7 +328,7 @@ if (!function_exists('runtime')) {
 
 if (!function_exists('sha')) {
 	
-	function sha($content = '', $type = 'sha256') {
+	function sha($content, $type = 'sha256') {
 		if (is_file($content)) { $content = file_get_contents($content); }
 		return hash($type, $content);
 	}
@@ -360,7 +360,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		public function create($tag = '', $content = null, $attribs = array()) {
+		public function create($tag, $content = null, $attribs = array()) {
 			$element = $this->createElement($tag);
 			if (is_object($content)) { $element->appendChild($content); } else { $element->appendChild($this->createTextNode((string)$content)); }
 			foreach ($attribs as $key => $value) { $element->setAttribute((is_string($key)?$key:(string)$value), $value!==null?(string)$value:null); }
@@ -378,7 +378,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		public function getElementById($name = '') {
+		public function getElementById($name) {
 			if ($element = parent::getElementById($name)) { return $element; } else {
 				$elements = $this->getElementsByTagName('*');
 				foreach ($elements as $element) {
@@ -399,7 +399,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2011, Neo Geek
 		 */
 		
-		public function import($string = '') {
+		public function import($string) {
 			$element = $this->createDocumentFragment();
 			$element->appendXML($string);
 			return $element;
