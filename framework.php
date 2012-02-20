@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 73, 2012-02-20 11:10:25
+ Overseer Framework, build 74, 2012-02-20 13:00:20
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -406,8 +406,8 @@ if (!class_exists('DOM')) {
 		/**
 		 * import
 		 * Imports an external HTML source as a document fragment. (Notice: Must be valid HTML)
-		 * @method object import(string $string);
-		 * @param string $string
+		 * @method object import(string|filename $string);
+		 * @param string|filename $string
 		 * @return object
 		 * @example $DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
 		 * @author Neo Geek <neo@neo-geek.net>
@@ -416,6 +416,7 @@ if (!class_exists('DOM')) {
 		
 		public function import($string) {
 			$element = $this->createDocumentFragment();
+			if (is_file($string)) { $string = file_get_contents($string); }
 			$element->appendXML($string);
 			return $element;
 		}
