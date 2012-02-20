@@ -1,11 +1,10 @@
 #The Overseer Framework
+
 A collection of simple functions and classes, the Overseer Framework is a useful addition to any PHP project. From functions for quickly retrieving data from MySQL queries to basic DOM manipulation, the Overseer Framework is packed with functions you never knew you needed.
 
 #Functions
 
 ##check_referer
-
----
 
 Checks the HTTP_REFERER server variable against the current or specified page.
 
@@ -20,8 +19,6 @@ boolean check_referer([string $url]);
 	check_referer();
 	check_referer('/contact/');
 ##fetch_remote_file
-
----
 
 Fetches an external file using the built-in PHP library CURL. Also allows for specifying a cached version and expiration time.
 
@@ -39,8 +36,6 @@ string fetch_remote_file(string $url [, string $cache, string|integer $expire]);
 	fetch_remote_file('http://www.example.com/file.xml', 'cache/file.xml', '1 hour ago');
 ##getbrowser
 
----
-
 Basic alternative to the built in PHP get_browser function. Supports Opera, Google Chrome, Safari, Firefox and Internet Explorer.
 
 ###Method
@@ -55,8 +50,6 @@ array getbrowser([string $http_user_agent]);
 	getbrowser('Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4')
 ##getcsv
 
----
-
 Returns CSV file or string as an array.
 
 ###Method
@@ -69,8 +62,6 @@ array getcsv(string $string);
 
 	getcsv('data.csv');
 ##mysql_fetch_results
-
----
 
 Returns the results of a MySQL query as an array or the number of rows affected.
 
@@ -87,8 +78,6 @@ array|integer mysql_fetch_results(string|resource $query [, array $results]);
 	mysql_fetch_results('UPDATE `user` SET `date` = NOW()');
 ##mysqli_fetch_results
 
----
-
 Returns the results of a MySQLi query as an array or the number of rows affected.
 
 ###Method
@@ -104,8 +93,6 @@ array|integer mysqli_fetch_results(resource $resource, string|resource $query [,
 	mysqli_fetch_results($mysqli, 'SELECT * FROM `user`');
 	mysqli_fetch_results($mysqli, 'UPDATE `user` SET `date` = NOW()');
 ##mysqli_transaction
-
----
 
 Prepares and executes a MYSQLi statement.
 
@@ -125,8 +112,6 @@ array|integer mysqli_transaction(resource $resource, string $query [, string $ty
 	mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = ?', 'ss', 'username', 'password');
 ##path_info
 
----
-
 Returns virtual path names based on offset.
 
 ###Method
@@ -139,8 +124,6 @@ string|boolean path_info([integer $offset]);
 
 	echo path_info(1);
 ##print_array
-
----
 
 Prints any number of arrays (or strings) to the output buffer.
 
@@ -157,8 +140,6 @@ boolean print_array([array $array1, ..., array $array10]);
 	print_array($results, $_POST);
 ##runtime
 
----
-
 Returns the number of milliseconds past between function calls.
 
 ###Method
@@ -172,8 +153,6 @@ integer runtime([int $precision, int $output]);
 
 	echo 'This script took ' . runtime(2) . ' millisecond(s) to run.';
 ##sha
-
----
 
 Returns a string or file encoded as sha256.
 
@@ -192,13 +171,9 @@ Classes
 
 ##DOM
 
----
-
 Extends the built in PHP DOMDocument class.
 
 ##$DOM->create
-
----
 
 Creates an HTML DOM element with content and attributes utilizing only one function call.
 
@@ -215,8 +190,6 @@ object create(string $tag, [string|object $content, array $attribs]);
 	$DOM->create('p', 'Lorem ipsum dolor sit amet.', array('class'=>'demo'));
 ##$DOM->getElementById
 
----
-
 Extends the default getElementById function to allow for access to imported elements.
 
 ###Method
@@ -230,8 +203,6 @@ object getElementById(string $name);
 	$DOM->getElementById('test'));
 ##$DOM->import
 
----
-
 Imports an external HTML source as a document fragment. (Notice: Must be valid HTML)
 
 ###Method
@@ -244,8 +215,6 @@ object import(string|filename $string);
 
 	$DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
 ##$DOM->nextSiblings
-
----
 
 Returns the next sibling based on an integer.
 
@@ -261,8 +230,6 @@ object nextSiblings(object $object, [integer $num]);
 	$DOM->nextSiblings($object, 5);
 ##$DOM->prependChild
 
----
-
 Prepends an object before the specific node.
 
 ###Method
@@ -276,8 +243,6 @@ object prependChild(object $object, object $node);
 
 	$DOM->prependChild($DOM->create('div', 'test'), $node);
 ##$DOM->remove
-
----
 
 Removes one or more HTML DOM elements.
 
