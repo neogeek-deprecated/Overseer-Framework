@@ -51,30 +51,45 @@ if (!function_exists('check_referer')) {
 
 /**
  * fetch_remote_file
- * Fetches an external file using the built-in PHP library CURL.
- * @method string fetch_remote_file(string $file);
- * @param string $file
+ * Fetches an external file using the built-in PHP library CURL. Also allows for specifying a cached version and expiration time.
+ * @method string fetch_remote_file(string $url [, string $cache, string|integer $expire]);
+ * @param string $url
+ * @param string $cache (optional)
+ * @param string|integer $expire (optional)
  * @return string
  * @example fetch_remote_file('http://www.example.com/file.xml');
+ * @example fetch_remote_file('http://www.example.com/file.xml', 'cache/file.xml', '1 hour ago');
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
  */
 
 if (!function_exists('fetch_remote_file')) {
-
-	function fetch_remote_file($file) {
+	
+	function fetch_remote_file($url, $cache = '', $expire = 0) {
 		
-		$ch = curl_init($file);
-		
-		if (parse_url($file, PHP_URL_SCHEME) == 'https') {
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		if (!file_exists($cache) || !$expire || filemtime($cache) < (is_numeric($expire)?$expire:strtotime($expire))) {
+			
+			$ch = curl_init($url);
+			
+			if (parse_url($url, PHP_URL_SCHEME) == 'https') {
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			}
+			
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			
+			$output = curl_exec($ch);
+			
+			curl_close($ch);
+			
+			if ($cache) {
+				file_put_contents($cache, $output);
+			}
+			
+		} else {
+			
+			$output = file_get_contents($cache);
+			
 		}
-		
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		
-		$output = curl_exec($ch);
-		
-		curl_close($ch);
 		
 		return $output;
 		
