@@ -63,7 +63,7 @@ array getcsv(string $string);
 	getcsv('data.csv');
 ##mysql_fetch_results
 
-Returns the results of a MySQL query as an array or the number of rows affected.
+Returns the results of a MySQL query as an array, the number of rows affected, or the row ID inserted.
 
 ###Method
 
@@ -78,7 +78,7 @@ array|integer mysql_fetch_results(string|resource $query [, array $results]);
 	mysql_fetch_results('UPDATE `user` SET `date` = NOW()');
 ##mysqli_fetch_results
 
-Returns the results of a MySQLi query as an array or the number of rows affected.
+Returns the results of a MySQLi query as an array, the number of rows affected, or the row ID inserted.
 
 ###Method
 

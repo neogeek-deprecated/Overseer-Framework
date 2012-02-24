@@ -158,7 +158,7 @@ if (!function_exists('getcsv')) {
 
 /**
  * mysql_fetch_results
- * Returns the results of a MySQL query as an array or the number of rows affected.
+ * Returns the results of a MySQL query as an array, the number of rows affected, or the row ID inserted.
  * @method array|integer mysql_fetch_results(string|resource $query [, array $results]);
  * @param string|resource $query
  * @param array $results (optional)
@@ -175,7 +175,7 @@ if (!function_exists('mysql_fetch_results')) {
 		if (is_resource($query)) { $result = $query; } else { $result = mysql_query($query); }
 		if (is_resource($result)) {
 			while ($row = mysql_fetch_assoc($result)) { array_push($results, $row); }
-		} else { $results = mysql_affected_rows(); }
+		} else { $results = ($insert_id = mysql_insert_id()) ? $insert_id : mysql_affected_rows(); }
 		return $results;
 	}
 	
@@ -183,7 +183,7 @@ if (!function_exists('mysql_fetch_results')) {
 
 /**
  * mysqli_fetch_results
- * Returns the results of a MySQLi query as an array or the number of rows affected.
+ * Returns the results of a MySQLi query as an array, the number of rows affected, or the row ID inserted.
  * @method array|integer mysqli_fetch_results(resource $resource, string|resource $query [, array $results]);
  * @param resource $resource
  * @param string|resource $query
@@ -202,7 +202,7 @@ if (!function_exists('mysqli_fetch_results')) {
 		if (is_object($result)) {
 			while ($row = $result->fetch_assoc()) { array_push($results, $row); }
 			$result->close();
-		} else { $results = mysqli_affected_rows($resource); }
+		} else { $results = ($insert_id = mysqli_insert_id($resource)) ? $insert_id : mysqli_affected_rows($resource); }
 		return $results;
 	}
 	
@@ -241,7 +241,9 @@ if (!function_exists('mysqli_transaction')) {
 		
 		$result->execute();
 		
-		if (!$meta = $result->result_metadata()) { return $result->affected_rows; }
+		if (!$meta = $result->result_metadata()) {
+			return ($insert_id = $result->insert_id) ? $insert_id : $result->affected_rows;
+		}
 		
 		while ($field = $meta->fetch_field()) { $params[] = &$row[$field->name]; }
 		
