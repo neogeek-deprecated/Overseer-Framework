@@ -37,17 +37,17 @@ class OAuth2 {
 	/**
 	 * request
 	 * Initiates a curl request using either GET or POST.
-	 * @method string request(string $url [, string $method]);
+	 * @method string request(string $url [, boolean $post]);
 	 * @param string $url
-	 * @param string $method (optional)
+	 * @param boolean $post (optional)
 	 * @return string
 	 * @example echo OAuth2::request('https://api.domain.com/request');
-	 * @example echo OAuth2::request('https://api.domain.com/request?response=json', 'post');
+	 * @example echo OAuth2::request('https://api.domain.com/request?response=json', true);
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
 	
-	public function request($url, $method = 'get') {
+	public function request($url, $post = false) {
 		
 		$ch = curl_init($url);
 		
@@ -55,7 +55,7 @@ class OAuth2 {
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		}
 		
-		if (strtolower($method) == 'post') {
+		if ($post) {
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, parse_url($url, PHP_URL_QUERY));
 		}
@@ -89,9 +89,7 @@ class Facebook_OAuth2 extends OAuth2 {
 		
 		$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
 		
-		preg_match('/access_token=([^&]+)/', $this->request($url), $matches);
-		
-		call_user_func($func, isset($matches[1]) ? $matches[1] : '');
+		call_user_func($func, fetch_remote_file($url));
 		
 	}
 	
@@ -119,10 +117,36 @@ class Google_Plus_OAuth2 extends OAuth2 {
 		
 		$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
 		
-		call_user_func($func, json_decode($this->request($url, 'post'), true));
+		call_user_func($func, json_decode($this->request($url, true), true));
 		
 	}
 	
 }
+
+class GitHub_OAuth2 extends OAuth2 {
+	
+	public $scope = 'user';
+	
+	public $url_authorize = 'https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=%s';
+	public $url_access_token = 'https://github.com/login/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s';
+	
+	public function Authenticate() {
+		
+		$url = sprintf($this->url_authorize, $this->id, $this->callback, $this->scope);
+		
+		header('Location: ' . $url); exit;
+		
+	}
+	
+	public function Callback($func) {
+		
+		$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
+		
+		call_user_func($func, $this->request($url, true));
+		
+	}
+	
+}
+
 
 ?>
