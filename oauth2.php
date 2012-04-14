@@ -89,7 +89,7 @@ class Facebook_OAuth2 extends OAuth2 {
 		
 		$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
 		
-		call_user_func($func, fetch_remote_file($url));
+		call_user_func($func, $this->request($url));
 		
 	}
 	
@@ -117,7 +117,7 @@ class Google_Plus_OAuth2 extends OAuth2 {
 		
 		$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
 		
-		call_user_func($func, json_decode($this->request($url, true), true));
+		call_user_func($func, $this->request($url, true));
 		
 	}
 	
