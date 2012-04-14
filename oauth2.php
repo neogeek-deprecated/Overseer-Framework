@@ -148,5 +148,4 @@ class GitHub_OAuth2 extends OAuth2 {
 	
 }
 
-
 ?>
