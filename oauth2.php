@@ -87,19 +87,15 @@ class OAuth2 {
 		
 		if (preg_match('/access_token=([^&]+)/', $string, $matches)) {
 			
-			$access_token = $matches[1];
+			return $matches[1];
 			
 		} else if ($string = json_decode($string, true)) {
 			
-			$access_token = $string['access_token'];
-			
-		} else {
-			
-			$access_token = '';
+			return $string['access_token'];
 			
 		}
 		
-		return $access_token;
+		return false;
 		
 	}
 	
