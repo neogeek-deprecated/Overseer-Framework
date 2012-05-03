@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 76, 2012-04-13 11:08:10
+ Overseer Framework, build 77, 2012-05-03 01:29:10
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -65,7 +65,7 @@ if (!function_exists('check_referer')) {
 
 if (!function_exists('fetch_remote_file')) {
 	
-	function fetch_remote_file($url, $cache = '', $expire = 0) {
+	function fetch_remote_file($url, $cache = '', $expire = -1) {
 		
 		if (!file_exists($cache) || !$expire || filemtime($cache) < (is_numeric($expire)?$expire:strtotime($expire))) {
 			
