@@ -8,14 +8,14 @@
  */
 
 class OAuth2 {
-
+	
 	public $id;
 	public $secret;
 	public $callback;
-
+	
 	public $url_authorize;
 	public $url_access_token;
-
+	
 	/**
 	 * __construct
 	 * Sets up a new OAuth2 object.
@@ -28,15 +28,15 @@ class OAuth2 {
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
-
-	public function __construct($id, $secret, $callback) {
-
+	
+	public function __construct ($id, $secret, $callback) {
+		
 		$this->id = $id;
 		$this->secret = $secret;
 		$this->callback = rawurlencode($callback);
-
+		
 	}
-
+	
 	/**
 	 * authenticate
 	 * Redirects the user to the specified authorize URL.
@@ -47,15 +47,15 @@ class OAuth2 {
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
-
-	public function authenticate($scope = '') {
-
+	
+	public function authenticate ($scope = '') {
+		
 		$url = sprintf($this->url_authorize, $this->id, $this->callback, rawurlencode($scope));
-
+		
 		header('Location: ' . $url); exit;
-
+		
 	}
-
+	
 	/**
 	 * callback
 	 * Returns the callback response based on OAuth2 callback GET variables.
@@ -66,15 +66,15 @@ class OAuth2 {
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
-
-	public function callback($func) {
-
+	
+	public function callback ($func) {
+		
 		$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
-
+		
 		call_user_func($func, $this->request($url, true));
-
+		
 	}
-
+	
 	/**
 	 * parseToken
 	 * Return the access_token from a OAuth2 callback request.
@@ -84,23 +84,23 @@ class OAuth2 {
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
-
-	public static function parseToken($string) {
-
+	
+	public static function parseToken ($string) {
+		
 		if (preg_match('/access_token=([^&]+)/', $string, $matches)) {
-
+			
 			return $matches[1];
-
+			
 		} else if ($string = json_decode($string, true)) {
-
+			
 			return $string['access_token'];
-
+			
 		}
-
+		
 		return false;
-
+		
 	}
-
+	
 	/**
 	 * request
 	 * Initiates a curl request using either GET or POST.
@@ -113,51 +113,51 @@ class OAuth2 {
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
-
-	public function request($url, $post = false) {
-
+	
+	public function request ($url, $post = false) {
+		
 		$ch = curl_init($url);
-
+		
 		if (parse_url($url, PHP_URL_SCHEME) == 'https') {
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		}
-
+		
 		if ($post) {
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, parse_url($url, PHP_URL_QUERY));
 		}
-
+		
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+		
 		$output = curl_exec($ch);
-
+		
 		curl_close($ch);
-
+		
 		return $output;
-
+		
 	}
-
+	
 }
 
 class Facebook_OAuth2 extends OAuth2 {
-
+	
 	public $url_authorize = 'https://graph.facebook.com/oauth/authorize?client_id=%s&redirect_uri=%s&scope=%s';
 	public $url_access_token = 'https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s';
-
+	
 }
 
 class GooglePlus_OAuth2 extends OAuth2 {
-
+	
 	public $url_authorize = 'https://accounts.google.com/o/oauth2/auth?client_id=%s&redirect_uri=%s&scope=%s&response_type=code';
 	public $url_access_token = 'https://accounts.google.com/o/oauth2/token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s&grant_type=authorization_code';
-
+	
 }
 
 class GitHub_OAuth2 extends OAuth2 {
-
+	
 	public $url_authorize = 'https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=%s';
 	public $url_access_token = 'https://github.com/login/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s';
-
+	
 }
 
 ?>

@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 77, 2012-05-03 01:29:10
+ Overseer Framework, build 78, 2012-05-07 20:30:05
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -43,8 +43,10 @@
 
 if (!function_exists('check_referer')) {
 
-	function check_referer($url = '') {
-		return isset($_SERVER['HTTP_REFERER'])?strpos($_SERVER['HTTP_REFERER'], $url?$url:$_SERVER['REQUEST_URI']) !== false:false;
+	function check_referer ($url = '') {
+		
+		return isset($_SERVER['HTTP_REFERER']) ? strpos($_SERVER['HTTP_REFERER'], $url ? $url : $_SERVER['REQUEST_URI']) !== false : false;
+		
 	}
 
 }
@@ -65,7 +67,7 @@ if (!function_exists('check_referer')) {
 
 if (!function_exists('fetch_remote_file')) {
 	
-	function fetch_remote_file($url, $cache = '', $expire = -1) {
+	function fetch_remote_file ($url, $cache = '', $expire = -1) {
 		
 		if (!file_exists($cache) || !$expire || filemtime($cache) < (is_numeric($expire)?$expire:strtotime($expire))) {
 			
@@ -111,7 +113,7 @@ if (!function_exists('fetch_remote_file')) {
 
 if (!function_exists('getbrowser')) {
 	
-	function getbrowser($http_user_agent = null) {
+	function getbrowser ($http_user_agent = null) {
 	
 		if ($http_user_agent == null) { $http_user_agent = $_SERVER['HTTP_USER_AGENT']; }
 	
@@ -149,9 +151,14 @@ if (!function_exists('getbrowser')) {
 
 if (!function_exists('getcsv')) {
 	
-	function getcsv($string) {
-		if (is_file($string)) { $string = file_get_contents($string); }
+	function getcsv ($string) {
+		
+		if (is_file($string)) {
+			$string = file_get_contents($string);
+		}
+		
 		return array_map('str_getcsv', preg_split('/\n|\r+/', $string, null, PREG_SPLIT_NO_EMPTY));
+		
 	}
 	
 }
@@ -171,12 +178,28 @@ if (!function_exists('getcsv')) {
 
 if (!function_exists('mysql_fetch_results')) {
 	
-	function mysql_fetch_results($query, $results = array()) {
-		if (is_resource($query)) { $result = $query; } else { $result = mysql_query($query); }
+	function mysql_fetch_results ($query, $results = array()) {
+		
+		if (is_resource($query)) {
+			$result = $query;
+		} else {
+			$result = mysql_query($query);
+		}
+		
 		if (is_resource($result)) {
-			while ($row = mysql_fetch_assoc($result)) { array_push($results, $row); }
-		} else { $results = ($insert_id = mysql_insert_id()) ? $insert_id : mysql_affected_rows(); }
+			
+			while ($row = mysql_fetch_assoc($result)) {
+				array_push($results, $row);
+			}
+			
+		} else {
+			
+			$results = ($insert_id = mysql_insert_id()) ? $insert_id : mysql_affected_rows();
+			
+		}
+		
 		return $results;
+		
 	}
 	
 }
@@ -197,13 +220,30 @@ if (!function_exists('mysql_fetch_results')) {
 
 if (!function_exists('mysqli_fetch_results')) {
 	
-	function mysqli_fetch_results($resource, $query, $results = array()) {
-		if (is_object($query)) { $result = $query; } else { $result = $resource->query($query); }
+	function mysqli_fetch_results ($resource, $query, $results = array()) {
+		
+		if (is_object($query)) {
+			$result = $query;
+		} else {
+			$result = $resource->query($query);
+		}
+		
 		if (is_object($result)) {
-			while ($row = $result->fetch_assoc()) { array_push($results, $row); }
+			
+			while ($row = $result->fetch_assoc()) {
+				array_push($results, $row);
+			}
+			
 			$result->close();
-		} else { $results = ($insert_id = mysqli_insert_id($resource)) ? $insert_id : mysqli_affected_rows($resource); }
+			
+		} else {
+			
+			$results = ($insert_id = mysqli_insert_id($resource)) ? $insert_id : mysqli_affected_rows($resource);
+			
+		}
+		
 		return $results;
+		
 	}
 	
 }
@@ -226,14 +266,16 @@ if (!function_exists('mysqli_fetch_results')) {
 
 if (!function_exists('mysqli_transaction')) {
 	
-	function mysqli_transaction($resource, $query, $types = '') {
+	function mysqli_transaction ($resource, $query, $types = '') {
 		
 		$attribs = array_slice(func_get_args(), 3);
 		$results = $params = $tmp = array();
 		
 		if (!$result = $resource->prepare(preg_replace('/[\'"%]+\?[\'"%]+/', '?', $query))) { return false; }
 		
-		foreach ($attribs as $key => $value) { $attribs[$key] = &$attribs[$key]; }
+		foreach ($attribs as $key => $value) {
+			$attribs[$key] = &$attribs[$key];
+		}
 		
 		if ($types && $attribs) {
 			call_user_func_array('mysqli_stmt_bind_param', array_merge(array($result, substr($types, 0, count($attribs))), $attribs));
@@ -245,12 +287,20 @@ if (!function_exists('mysqli_transaction')) {
 			return ($insert_id = $result->insert_id) ? $insert_id : $result->affected_rows;
 		}
 		
-		while ($field = $meta->fetch_field()) { $params[] = &$row[$field->name]; }
+		while ($field = $meta->fetch_field()) {
+			$params[] = &$row[$field->name];
+		}
 		
 		call_user_func_array('mysqli_stmt_bind_result', array_merge(array($result), $params));
 		
 		while ($result->fetch()) {
-			foreach ($row as $key => $value) { $tmp[$key] = $value; } array_push($results, $tmp);
+			
+			foreach ($row as $key => $value) {
+				$tmp[$key] = $value;
+			}
+			
+			array_push($results, $tmp);
+			
 		}
 		
 		$result->close();
@@ -274,11 +324,16 @@ if (!function_exists('mysqli_transaction')) {
 
 if (!function_exists('path_info')) {
 	
-	if (!isset($_SERVER['PATH_INFO']) && isset($_SERVER['ORIG_PATH_INFO'])) { $_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO']; }
+	if (!isset($_SERVER['PATH_INFO']) && isset($_SERVER['ORIG_PATH_INFO'])) {
+		$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+	}
 	
-	function path_info($offset = 0) {
-		$matches = preg_split('/\//', isset($_SERVER['PATH_INFO'], $_SERVER['SCRIPT_NAME']) && ($_SERVER['PATH_INFO'] != $_SERVER['SCRIPT_NAME'])?$_SERVER['PATH_INFO']:null, null, PREG_SPLIT_NO_EMPTY);
-		return isset($matches[$offset])?$matches[$offset]:false;
+	function path_info ($offset = 0) {
+		
+		$matches = preg_split('/\//', isset($_SERVER['PATH_INFO'], $_SERVER['SCRIPT_NAME']) && ($_SERVER['PATH_INFO'] != $_SERVER['SCRIPT_NAME']) ? $_SERVER['PATH_INFO'] : null, null, PREG_SPLIT_NO_EMPTY);
+		
+		return isset($matches[$offset]) ? $matches[$offset] : false;
+		
 	}
 	
 }
@@ -298,10 +353,16 @@ if (!function_exists('path_info')) {
 
 if (!function_exists('print_array')) {
 	
-	function print_array() {
+	function print_array () {
+		
 		$arrays = func_get_args();
-		foreach ($arrays as $array) { echo '<pre>' . print_r($array, true) . '</pre>'; }
+		
+		foreach ($arrays as $array) {
+			echo '<pre>' . print_r($array, true) . '</pre>';
+		}
+		
 		return false;
+		
 	}
 	
 }
@@ -321,11 +382,18 @@ if (!function_exists('print_array')) {
 
 if (!function_exists('runtime')) {
 	
-	function runtime($precision = 0, $output = 0) {
+	function runtime ($precision = 0, $output = 0) {
+		
 		static $time;
-		if ($time) { $output = round((microtime(true) - (float)$time) * 10000, $precision); }
+		
+		if ($time) {
+			$output = round((microtime(true) - (float)$time) * 10000, $precision);
+		}
+		
 		$time = microtime(true);
+		
 		return $output;
+		
 	}
 	
 }
@@ -345,9 +413,14 @@ if (!function_exists('runtime')) {
 
 if (!function_exists('sha')) {
 	
-	function sha($content, $type = 'sha256') {
-		if (is_file($content)) { $content = file_get_contents($content); }
+	function sha ($content, $type = 'sha256') {
+		
+		if (is_file($content)) {
+			$content = file_get_contents($content);
+		}
+		
 		return hash($type, $content);
+		
 	}
 	
 }
@@ -377,11 +450,26 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function create($tag, $content = null, $attribs = array()) {
+		public function create ($tag, $content = null, $attribs = array()) {
+			
 			$element = $this->createElement($tag);
-			if (is_object($content)) { $element->appendChild($content); } else { $element->appendChild($this->createTextNode((string)$content)); }
-			foreach ($attribs as $key => $value) { $element->setAttribute((is_string($key)?$key:(string)$value), $value!==null?(string)$value:null); }
+			
+			if (is_object($content)) {
+				
+				$element->appendChild($content);
+				
+			} else {
+				
+				$element->appendChild($this->createTextNode((string)$content));
+				
+			}
+			
+			foreach ($attribs as $key => $value) {
+				$element->setAttribute((is_string($key)?$key:(string)$value), $value!==null?(string)$value:null);
+			}
+			
 			return $element;
+			
 		}
 		
 		/**
@@ -395,14 +483,24 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function getElementById($name) {
-			if ($element = parent::getElementById($name)) { return $element; } else {
+		public function getElementById ($name) {
+			
+			if ($element = parent::getElementById($name)) {
+				
+				return $element;
+				
+			} else {
+				
 				$elements = $this->getElementsByTagName('*');
+				
 				foreach ($elements as $element) {
 					if ($element->getAttribute('id') == $name) { return $element; }
 				}
+				
 			}
+			
 			return false;
+			
 		}
 		
 		/**
@@ -416,11 +514,18 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function import($string) {
+		public function import ($string) {
+			
 			$element = $this->createDocumentFragment();
-			if (is_file($string)) { $string = file_get_contents($string); }
+			
+			if (is_file($string)) {
+				$string = file_get_contents($string);
+			}
+			
 			$element->appendXML($string);
+			
 			return $element;
+			
 		}
 		
 		/**
@@ -435,9 +540,18 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function nextSiblings($object, $num = 1) {
-			while ($num) { $object = $object->nextSibling; $num--; }
+		public function nextSiblings ($object, $num = 1) {
+			
+			while ($num) {
+				
+				$object = $object->nextSibling;
+				
+				$num--;
+				
+			}
+			
 			return $object;
+			
 		}
 		
 		/**
@@ -452,8 +566,10 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function prependChild($object, $node) {
+		public function prependChild ($object, $node) {
+			
 			$node->parentNode->insertBefore($object, $node);
+			
 		}
 		
 		/**
@@ -468,11 +584,22 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function remove($object) {
+		public function remove ($object) {
+			
 			if (isset($object->length)) {
-				while ($object->length) { $this->remove($object->item($object->length -1)); }
-			} else if (is_object($object)) { return $object->parentNode->removeChild($object); }
+				
+				while ($object->length) {
+					$this->remove($object->item($object->length -1));
+				}
+				
+			} else if (is_object($object)) {
+				
+				return $object->parentNode->removeChild($object);
+				
+			}
+			
 			return false;
+			
 		}
 		
 	}
