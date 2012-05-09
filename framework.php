@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 78, 2012-05-07 20:30:05
+ Overseer Framework, build 79, 2012-05-08 20:24:30
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -69,7 +69,7 @@ if (!function_exists('fetch_remote_file')) {
 	
 	function fetch_remote_file ($url, $cache = '', $expire = -1) {
 		
-		if (!file_exists($cache) || !$expire || filemtime($cache) < (is_numeric($expire)?$expire:strtotime($expire))) {
+		if (!file_exists($cache) || !$expire || filemtime($cache) < (is_numeric($expire) ? $expire : strtotime($expire))) {
 			
 			$ch = curl_init($url);
 			
@@ -118,19 +118,19 @@ if (!function_exists('getbrowser')) {
 		if ($http_user_agent == null) { $http_user_agent = $_SERVER['HTTP_USER_AGENT']; }
 	
 		if (preg_match('/Opera(?:[\/ ]([0-9.]+))?(?:.*Version[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
-			return array('Opera', isset($matches[2])?$matches[2]:(isset($matches[1])?$matches[1]:null));
+			return array('Opera', isset($matches[2]) ? $matches[2] : (isset($matches[1]) ? $matches[1] : null));
 		
 		} else if (preg_match('/Chrome\/([0-9.]+)?/i', $http_user_agent, $matches)) {
-			return array('Google Chrome', isset($matches[1])?$matches[1]:null);
+			return array('Google Chrome', isset($matches[1]) ? $matches[1] : null);
 		
 		} else if (preg_match('/(?:Version\/([0-9.]+).*)?Safari[\/ ][0-9.]+?/i', $http_user_agent, $matches)) {
-			return array('Safari', isset($matches[1])?$matches[1]:null);
+			return array('Safari', isset($matches[1]) ? $matches[1] : null);
 		
 		} else if (preg_match('/Firefox(?:[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
-			return array('Firefox', isset($matches[1])?$matches[1]:null);
+			return array('Firefox', isset($matches[1]) ? $matches[1] : null);
 		
 		} else if (preg_match('/MSIE(?:[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
-			return array('Internet Explorer', isset($matches[1])?$matches[1]:null);
+			return array('Internet Explorer', isset($matches[1]) ? $matches[1] : null);
 		
 		} else { return false; }
 	
@@ -465,7 +465,7 @@ if (!class_exists('DOM')) {
 			}
 			
 			foreach ($attribs as $key => $value) {
-				$element->setAttribute((is_string($key)?$key:(string)$value), $value!==null?(string)$value:null);
+				$element->setAttribute((is_string($key) ? $key : (string)$value), $value!==null ? (string)$value : null);
 			}
 			
 			return $element;
