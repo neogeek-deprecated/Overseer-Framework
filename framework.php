@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 79, 2012-05-08 20:24:30
+ Overseer Framework, build 80, 2012-05-25 17:28:00
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -569,6 +569,25 @@ if (!class_exists('DOM')) {
 		public function prependChild ($object, $node) {
 			
 			$node->parentNode->insertBefore($object, $node);
+			
+		}
+		
+		/**
+		 * query
+		 * Queries the DOM using XPath.
+		 * @method object query(string $query);
+		 * @param string $query
+		 * @return object
+		 * @example $DOM->query('//div');
+		 * @author Neo Geek <neo@neo-geek.net>
+		 * @copyright Copyright (c) 2012, Neo Geek
+		 */
+		
+		public function query ($query) {
+			
+			$xpath = new DOMXPath($this);
+			
+			return $xpath->query($query);
 			
 		}
 		

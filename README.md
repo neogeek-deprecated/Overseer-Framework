@@ -242,6 +242,19 @@ object prependChild(object $object, object $node);
 ###Examples
 
 	$DOM->prependChild($DOM->create('div', 'test'), $node);
+##$DOM->query
+
+Queries the DOM using XPath.
+
+###Method
+
+object query(string $query);
+###Parameters
+
+	string $query
+###Examples
+
+	$DOM->query('//div');
 ##$DOM->remove
 
 Removes one or more HTML DOM elements.
