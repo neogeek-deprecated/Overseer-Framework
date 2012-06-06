@@ -2,7 +2,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 80, 2012-05-25 17:28:00
+ Overseer Framework, build 81, 2012-06-06 03:26:00
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -32,7 +32,7 @@
 /**
  * check_referer
  * Checks the HTTP_REFERER server variable against the current or specified page.
- * @method boolean check_referer([string $url]);
+ * @method boolean check_referer ([string $url]);
  * @param string $url (optional)
  * @return boolean
  * @example check_referer();
@@ -54,7 +54,7 @@ if (!function_exists('check_referer')) {
 /**
  * fetch_remote_file
  * Fetches an external file using the built-in PHP library CURL. Also allows for specifying a cached version and expiration time.
- * @method string fetch_remote_file(string $url [, string $cache, string|integer $expire]);
+ * @method string fetch_remote_file (string $url [, string $cache, string|integer $expire]);
  * @param string $url
  * @param string $cache (optional)
  * @param string|integer $expire (optional)
@@ -74,7 +74,9 @@ if (!function_exists('fetch_remote_file')) {
 			$ch = curl_init($url);
 			
 			if (parse_url($url, PHP_URL_SCHEME) == 'https') {
+				
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				
 			}
 			
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -84,7 +86,9 @@ if (!function_exists('fetch_remote_file')) {
 			curl_close($ch);
 			
 			if ($cache) {
+				
 				file_put_contents($cache, $output);
+				
 			}
 			
 		} else {
@@ -102,9 +106,9 @@ if (!function_exists('fetch_remote_file')) {
 /**
  * getbrowser
  * Basic alternative to the built in PHP get_browser function. Supports Opera, Google Chrome, Safari, Firefox and Internet Explorer.
- * @method array getbrowser([string $http_user_agent]);
+ * @method array|boolean getbrowser ([string $http_user_agent]);
  * @param string $http_user_agent (optional)
- * @return array
+ * @return array|boolean
  * @example getbrowser();
  * @example getbrowser('Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4')
  * @author Neo Geek <neo@neo-geek.net>
@@ -118,18 +122,23 @@ if (!function_exists('getbrowser')) {
 		if ($http_user_agent == null) { $http_user_agent = $_SERVER['HTTP_USER_AGENT']; }
 	
 		if (preg_match('/Opera(?:[\/ ]([0-9.]+))?(?:.*Version[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
+			
 			return array('Opera', isset($matches[2]) ? $matches[2] : (isset($matches[1]) ? $matches[1] : null));
 		
 		} else if (preg_match('/Chrome\/([0-9.]+)?/i', $http_user_agent, $matches)) {
+			
 			return array('Google Chrome', isset($matches[1]) ? $matches[1] : null);
 		
 		} else if (preg_match('/(?:Version\/([0-9.]+).*)?Safari[\/ ][0-9.]+?/i', $http_user_agent, $matches)) {
+			
 			return array('Safari', isset($matches[1]) ? $matches[1] : null);
 		
 		} else if (preg_match('/Firefox(?:[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
+			
 			return array('Firefox', isset($matches[1]) ? $matches[1] : null);
 		
 		} else if (preg_match('/MSIE(?:[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
+			
 			return array('Internet Explorer', isset($matches[1]) ? $matches[1] : null);
 		
 		} else { return false; }
@@ -141,7 +150,7 @@ if (!function_exists('getbrowser')) {
 /**
  * getcsv
  * Returns CSV file or string as an array.
- * @method array getcsv(string $string);
+ * @method array getcsv (string $string);
  * @param string $string
  * @return array
  * @example getcsv('data.csv');
@@ -154,7 +163,9 @@ if (!function_exists('getcsv')) {
 	function getcsv ($string) {
 		
 		if (is_file($string)) {
+			
 			$string = file_get_contents($string);
+			
 		}
 		
 		return array_map('str_getcsv', preg_split('/\n|\r+/', $string, null, PREG_SPLIT_NO_EMPTY));
@@ -166,12 +177,13 @@ if (!function_exists('getcsv')) {
 /**
  * mysql_fetch_results
  * Returns the results of a MySQL query as an array, the number of rows affected, or the row ID inserted.
- * @method array|integer mysql_fetch_results(string|resource $query [, array $results]);
+ * @method array|integer mysql_fetch_results (string|resource $query [, array $results]);
  * @param string|resource $query
  * @param array $results (optional)
  * @return array|integer
- * @example mysql_fetch_results('SELECT * FROM `user`');
- * @example mysql_fetch_results('UPDATE `user` SET `date` = NOW()');
+ * @example mysql_fetch_results('INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
+ * @example mysql_fetch_results('SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
+ * @example mysql_fetch_results('UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
  */
@@ -181,15 +193,21 @@ if (!function_exists('mysql_fetch_results')) {
 	function mysql_fetch_results ($query, $results = array()) {
 		
 		if (is_resource($query)) {
+			
 			$result = $query;
+			
 		} else {
+			
 			$result = mysql_query($query);
+			
 		}
 		
 		if (is_resource($result)) {
 			
 			while ($row = mysql_fetch_assoc($result)) {
+				
 				array_push($results, $row);
+				
 			}
 			
 		} else {
@@ -207,13 +225,14 @@ if (!function_exists('mysql_fetch_results')) {
 /**
  * mysqli_fetch_results
  * Returns the results of a MySQLi query as an array, the number of rows affected, or the row ID inserted.
- * @method array|integer mysqli_fetch_results(resource $resource, string|resource $query [, array $results]);
+ * @method array|integer mysqli_fetch_results (resource $resource, string|resource $query [, array $results]);
  * @param resource $resource
  * @param string|resource $query
  * @param array $results (optional)
  * @return array|integer
- * @example mysqli_fetch_results($mysqli, 'SELECT * FROM `user`');
- * @example mysqli_fetch_results($mysqli, 'UPDATE `user` SET `date` = NOW()');
+ * @example mysqli_fetch_results($mysqli, 'INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
+ * @example mysqli_fetch_results($mysqli, 'SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
+ * @example mysqli_fetch_results($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
  */
@@ -223,15 +242,21 @@ if (!function_exists('mysqli_fetch_results')) {
 	function mysqli_fetch_results ($resource, $query, $results = array()) {
 		
 		if (is_object($query)) {
+			
 			$result = $query;
+			
 		} else {
+			
 			$result = $resource->query($query);
+			
 		}
 		
 		if (is_object($result)) {
 			
 			while ($row = $result->fetch_assoc()) {
+				
 				array_push($results, $row);
+				
 			}
 			
 			$result->close();
@@ -250,8 +275,8 @@ if (!function_exists('mysqli_fetch_results')) {
 
 /**
  * mysqli_transaction
- * Prepares and executes a MYSQLi statement.
- * @method array|integer mysqli_transaction(resource $resource, string $query [, string $types, string $var1, ..., string $var10]);
+ * Prepares and executes a MYSQLi statement. Returns the results of the MySQLi query as an array, the number of rows affected, or the row ID inserted.
+ * @method array|integer mysqli_transaction (resource $resource, string $query [, string $types, string $var1, ..., string $var10]);
  * @param resource $resource
  * @param string $query
  * @param string $types (optional)
@@ -259,7 +284,9 @@ if (!function_exists('mysqli_fetch_results')) {
  * @param string $var# (optional)
  * @param string $var10 (optional)
  * @return array|integer
- * @example mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = ?', 'ss', 'username', 'password');
+ * @example mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = SHA(?)', 'ss', 'username', 'password');
+ * @example mysqli_transaction($mysqli, 'SELECT * FROM `user` WHERE `user_id` = ? LIMIT 1', 'i', 1);
+ * @example mysqli_transaction($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = ? LIMIT 1', 'i', 1);
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
  */
@@ -274,21 +301,29 @@ if (!function_exists('mysqli_transaction')) {
 		if (!$result = $resource->prepare(preg_replace('/[\'"%]+\?[\'"%]+/', '?', $query))) { return false; }
 		
 		foreach ($attribs as $key => $value) {
+			
 			$attribs[$key] = &$attribs[$key];
+			
 		}
 		
 		if ($types && $attribs) {
+			
 			call_user_func_array('mysqli_stmt_bind_param', array_merge(array($result, substr($types, 0, count($attribs))), $attribs));
+			
 		}
 		
 		$result->execute();
 		
 		if (!$meta = $result->result_metadata()) {
+			
 			return ($insert_id = $result->insert_id) ? $insert_id : $result->affected_rows;
+			
 		}
 		
 		while ($field = $meta->fetch_field()) {
+			
 			$params[] = &$row[$field->name];
+			
 		}
 		
 		call_user_func_array('mysqli_stmt_bind_result', array_merge(array($result), $params));
@@ -296,7 +331,9 @@ if (!function_exists('mysqli_transaction')) {
 		while ($result->fetch()) {
 			
 			foreach ($row as $key => $value) {
+				
 				$tmp[$key] = $value;
+				
 			}
 			
 			array_push($results, $tmp);
@@ -314,7 +351,7 @@ if (!function_exists('mysqli_transaction')) {
 /**
  * path_info
  * Returns virtual path names based on offset.
- * @method string|boolean path_info([integer $offset]);
+ * @method string|boolean path_info ([integer $offset]);
  * @param integer $offset (optional)
  * @return string|boolean
  * @example echo path_info(1);
@@ -325,7 +362,9 @@ if (!function_exists('mysqli_transaction')) {
 if (!function_exists('path_info')) {
 	
 	if (!isset($_SERVER['PATH_INFO']) && isset($_SERVER['ORIG_PATH_INFO'])) {
+		
 		$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
+		
 	}
 	
 	function path_info ($offset = 0) {
@@ -340,12 +379,12 @@ if (!function_exists('path_info')) {
 
 /**
  * print_array
- * Prints any number of arrays (or strings) to the output buffer.
- * @method boolean print_array([array $array1, ..., array $array10]);
+ * Prints any number of arrays (or strings) to the output buffer surrounded by pre tags.
+ * @method void print_array ([array $array1, ..., array $array10]);
  * @param string $array1 (optional)
  * @param string $array# (optional)
  * @param string $array10 (optional)
- * @return boolean
+ * @return void
  * @example print_array($results, $_POST);
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
@@ -358,10 +397,10 @@ if (!function_exists('print_array')) {
 		$arrays = func_get_args();
 		
 		foreach ($arrays as $array) {
+			
 			echo '<pre>' . print_r($array, true) . '</pre>';
+			
 		}
-		
-		return false;
 		
 	}
 	
@@ -370,7 +409,7 @@ if (!function_exists('print_array')) {
 /**
  * runtime
  * Returns the number of milliseconds past between function calls.
- * @method integer runtime([int $precision, int $output]);
+ * @method integer runtime ([int $precision, int $output]);
  * @static integer $time
  * @param integer $precision (optional)
  * @param integer $output (optional)
@@ -387,7 +426,9 @@ if (!function_exists('runtime')) {
 		static $time;
 		
 		if ($time) {
+			
 			$output = round((microtime(true) - (float)$time) * 10000, $precision);
+			
 		}
 		
 		$time = microtime(true);
@@ -401,7 +442,7 @@ if (!function_exists('runtime')) {
 /**
  * sha
  * Returns a string or file encoded as sha256.
- * @method string sha(string|filename $content [, string $type]);
+ * @method string sha (string|filename $content [, string $type]);
  * @param string|filename $content
  * @param string $type (optional)
  * @return string
@@ -416,7 +457,9 @@ if (!function_exists('sha')) {
 	function sha ($content, $type = 'sha256') {
 		
 		if (is_file($content)) {
+			
 			$content = file_get_contents($content);
+			
 		}
 		
 		return hash($type, $content);
@@ -440,7 +483,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * create
 		 * Creates an HTML DOM element with content and attributes utilizing only one function call.
-		 * @method object create(string $tag, [string|object $content, array $attribs]);
+		 * @method object create (string $tag [, string|object $content, array $attribs]);
 		 * @param string $tag
 		 * @param string|object $content (optional)
 		 * @param array $attribs (optional)
@@ -465,7 +508,9 @@ if (!class_exists('DOM')) {
 			}
 			
 			foreach ($attribs as $key => $value) {
+				
 				$element->setAttribute((is_string($key) ? $key : (string)$value), $value!==null ? (string)$value : null);
+				
 			}
 			
 			return $element;
@@ -474,10 +519,10 @@ if (!class_exists('DOM')) {
 		
 		/**
 		 * getElementById
-		 * Extends the default getElementById function to allow for access to imported elements.
-		 * @method object getElementById(string $name);
+		 * Extends the default getElementById function to allow for access to imported/created elements.
+		 * @method object|boolean getElementById (string $name);
 		 * @param string $name
-		 * @return object
+		 * @return object|boolean
 		 * @example $DOM->getElementById('test'));
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2012, Neo Geek
@@ -494,7 +539,9 @@ if (!class_exists('DOM')) {
 				$elements = $this->getElementsByTagName('*');
 				
 				foreach ($elements as $element) {
+					
 					if ($element->getAttribute('id') == $name) { return $element; }
+					
 				}
 				
 			}
@@ -506,7 +553,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * import
 		 * Imports an external HTML source as a document fragment. (Notice: Must be valid HTML)
-		 * @method object import(string|filename $string);
+		 * @method object import (string|filename $string);
 		 * @param string|filename $string
 		 * @return object
 		 * @example $DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
@@ -519,7 +566,9 @@ if (!class_exists('DOM')) {
 			$element = $this->createDocumentFragment();
 			
 			if (is_file($string)) {
+				
 				$string = file_get_contents($string);
+				
 			}
 			
 			$element->appendXML($string);
@@ -531,10 +580,10 @@ if (!class_exists('DOM')) {
 		/**
 		 * nextSiblings
 		 * Returns the next sibling based on an integer.
-		 * @method object nextSiblings(object $object, [integer $num]);
+		 * @method object|boolean nextSiblings (object $object [, integer $num]);
 		 * @param object $object
 		 * @param integer $num (optional)
-		 * @return object
+		 * @return object|boolean
 		 * @example $DOM->nextSiblings($object, 5);
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2012, Neo Geek
@@ -544,9 +593,19 @@ if (!class_exists('DOM')) {
 			
 			while ($num) {
 				
-				$object = $object->nextSibling;
-				
-				$num--;
+				if ($object = $object->nextSibling) {
+					
+					if ($object->nodeType == XML_ELEMENT_NODE) {
+						
+						$num--;
+						
+					}
+					
+				} else {
+					
+					return false;
+					
+				}
 				
 			}
 			
@@ -555,27 +614,27 @@ if (!class_exists('DOM')) {
 		}
 		
 		/**
-		 * prependChild
+		 * prepend
 		 * Prepends an object before the specific node.
-		 * @method object prependChild(object $object, object $node);
+		 * @method object prepend (object $object, object $node);
 		 * @param object $object
 		 * @param object $node
 		 * @return object
-		 * @example $DOM->prependChild($DOM->create('div', 'test'), $node);
+		 * @example $DOM->prepend($DOM->create('div', 'test'), $node);
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function prependChild ($object, $node) {
+		public function prepend ($object, $node) {
 			
-			$node->parentNode->insertBefore($object, $node);
+			return $node->parentNode->insertBefore($object, $node);
 			
 		}
 		
 		/**
 		 * query
 		 * Queries the DOM using XPath.
-		 * @method object query(string $query);
+		 * @method object query (string $query);
 		 * @param string $query
 		 * @return object
 		 * @example $DOM->query('//div');
@@ -594,9 +653,9 @@ if (!class_exists('DOM')) {
 		/**
 		 * remove
 		 * Removes one or more HTML DOM elements.
-		 * @method boolean remove(object $object);
+		 * @method object|boolean remove (object $object);
 		 * @param object $object
-		 * @return boolean
+		 * @return object|boolean
 		 * @example $DOM->remove($DOM->getElementById('demo'));
 		 * @example $DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
 		 * @author Neo Geek <neo@neo-geek.net>
@@ -611,13 +670,31 @@ if (!class_exists('DOM')) {
 					$this->remove($object->item($object->length -1));
 				}
 				
+				return true;
+				
 			} else if (is_object($object)) {
 				
 				return $object->parentNode->removeChild($object);
 				
 			}
 			
-			return false;
+		}
+		
+		/**
+		 * replace
+		 * Replaces one object with another.
+		 * @method object replace (object $object, object $node);
+		 * @param object $object
+		 * @param object $node
+		 * @return object
+		 * @example $DOM->replace($DOM->create('select'), $DOM->getElementById('dropdown'));
+		 * @author Neo Geek <neo@neo-geek.net>
+		 * @copyright Copyright (c) 2012, Neo Geek
+		 */
+		
+		public function replace ($object, $node) {
+			
+			return $node->parentNode->replaceChild($object, $node);
 			
 		}
 		

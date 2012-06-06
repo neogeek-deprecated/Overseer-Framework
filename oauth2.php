@@ -19,7 +19,7 @@ class OAuth2 {
 	/**
 	 * __construct
 	 * Sets up a new OAuth2 object.
-	 * @method object OAuth2(string $id, string $secret, string $callback);
+	 * @method object OAuth2 (string $id, string $secret, string $callback);
 	 * @param string $id
 	 * @param string $secret
 	 * @param string $callback
@@ -40,10 +40,10 @@ class OAuth2 {
 	/**
 	 * authenticate
 	 * Redirects the user to the specified authorize URL.
-	 * @method null authenticate([string $scope]);
+	 * @method void authenticate ([string $scope]);
 	 * @param string $scope (optional)
-	 * @return null
-	 * @example echo $OAuth2->authenticate();
+	 * @return void
+	 * @example $OAuth2->authenticate();
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
@@ -59,10 +59,10 @@ class OAuth2 {
 	/**
 	 * callback
 	 * Returns the callback response based on OAuth2 callback GET variables.
-	 * @method null callback(function $func);
+	 * @method void callback (function $func);
 	 * @param function func
-	 * @return null
-	 * @example echo $OAuth2->callback(function($return) { echo OAuth2::parseToken($return); });
+	 * @return void
+	 * @example $OAuth2->callback(function($return) { echo OAuth2::parseToken($return); });
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
 	 */
@@ -78,8 +78,9 @@ class OAuth2 {
 	/**
 	 * parseToken
 	 * Return the access_token from a OAuth2 callback request.
-	 * @method string parseToken();
-	 * @return string
+	 * @method string|boolean parseToken (string $string);
+	 * @param string $string
+	 * @return string|boolean
 	 * @example echo OAuth2::parseToken($return);
 	 * @author Neo Geek <neo@neo-geek.net>
 	 * @copyright Copyright (c) 2012, Neo Geek
@@ -104,7 +105,7 @@ class OAuth2 {
 	/**
 	 * request
 	 * Initiates a curl request using either GET or POST.
-	 * @method string request(string $url [, boolean $post]);
+	 * @method string request (string $url [, boolean $post]);
 	 * @param string $url
 	 * @param boolean $post (optional)
 	 * @return string
@@ -119,12 +120,16 @@ class OAuth2 {
 		$ch = curl_init($url);
 		
 		if (parse_url($url, PHP_URL_SCHEME) == 'https') {
+			
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			
 		}
 		
 		if ($post) {
+			
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, parse_url($url, PHP_URL_QUERY));
+			
 		}
 		
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

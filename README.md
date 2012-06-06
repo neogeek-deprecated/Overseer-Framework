@@ -10,7 +10,7 @@ Checks the HTTP_REFERER server variable against the current or specified page.
 
 ###Method
 
-boolean check_referer([string $url]);
+boolean check_referer ([string $url]);
 ###Parameters
 
 	string $url (optional)
@@ -24,7 +24,7 @@ Fetches an external file using the built-in PHP library CURL. Also allows for sp
 
 ###Method
 
-string fetch_remote_file(string $url [, string $cache, string|integer $expire]);
+string fetch_remote_file (string $url [, string $cache, string|integer $expire]);
 ###Parameters
 
 	string $url
@@ -40,7 +40,7 @@ Basic alternative to the built in PHP get_browser function. Supports Opera, Goog
 
 ###Method
 
-array getbrowser([string $http_user_agent]);
+array|boolean getbrowser ([string $http_user_agent]);
 ###Parameters
 
 	string $http_user_agent (optional)
@@ -54,7 +54,7 @@ Returns CSV file or string as an array.
 
 ###Method
 
-array getcsv(string $string);
+array getcsv (string $string);
 ###Parameters
 
 	string $string
@@ -67,22 +67,23 @@ Returns the results of a MySQL query as an array, the number of rows affected, o
 
 ###Method
 
-array|integer mysql_fetch_results(string|resource $query [, array $results]);
+array|integer mysql_fetch_results (string|resource $query [, array $results]);
 ###Parameters
 
 	string|resource $query
 	array $results (optional)
 ###Examples
 
-	mysql_fetch_results('SELECT * FROM `user`');
-	mysql_fetch_results('UPDATE `user` SET `date` = NOW()');
+	mysql_fetch_results('INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
+	mysql_fetch_results('SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
+	mysql_fetch_results('UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
 ##mysqli_fetch_results
 
 Returns the results of a MySQLi query as an array, the number of rows affected, or the row ID inserted.
 
 ###Method
 
-array|integer mysqli_fetch_results(resource $resource, string|resource $query [, array $results]);
+array|integer mysqli_fetch_results (resource $resource, string|resource $query [, array $results]);
 ###Parameters
 
 	resource $resource
@@ -90,15 +91,16 @@ array|integer mysqli_fetch_results(resource $resource, string|resource $query [,
 	array $results (optional)
 ###Examples
 
-	mysqli_fetch_results($mysqli, 'SELECT * FROM `user`');
-	mysqli_fetch_results($mysqli, 'UPDATE `user` SET `date` = NOW()');
+	mysqli_fetch_results($mysqli, 'INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
+	mysqli_fetch_results($mysqli, 'SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
+	mysqli_fetch_results($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
 ##mysqli_transaction
 
-Prepares and executes a MYSQLi statement.
+Prepares and executes a MYSQLi statement. Returns the results of the MySQLi query as an array, the number of rows affected, or the row ID inserted.
 
 ###Method
 
-array|integer mysqli_transaction(resource $resource, string $query [, string $types, string $var1, ..., string $var10]);
+array|integer mysqli_transaction (resource $resource, string $query [, string $types, string $var1, ..., string $var10]);
 ###Parameters
 
 	resource $resource
@@ -109,14 +111,16 @@ array|integer mysqli_transaction(resource $resource, string $query [, string $ty
 	string $var10 (optional)
 ###Examples
 
-	mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = ?', 'ss', 'username', 'password');
+	mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = SHA(?)', 'ss', 'username', 'password');
+	mysqli_transaction($mysqli, 'SELECT * FROM `user` WHERE `user_id` = ? LIMIT 1', 'i', 1);
+	mysqli_transaction($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = ? LIMIT 1', 'i', 1);
 ##path_info
 
 Returns virtual path names based on offset.
 
 ###Method
 
-string|boolean path_info([integer $offset]);
+string|boolean path_info ([integer $offset]);
 ###Parameters
 
 	integer $offset (optional)
@@ -125,11 +129,11 @@ string|boolean path_info([integer $offset]);
 	echo path_info(1);
 ##print_array
 
-Prints any number of arrays (or strings) to the output buffer.
+Prints any number of arrays (or strings) to the output buffer surrounded by pre tags.
 
 ###Method
 
-boolean print_array([array $array1, ..., array $array10]);
+void print_array ([array $array1, ..., array $array10]);
 ###Parameters
 
 	string $array1 (optional)
@@ -144,7 +148,7 @@ Returns the number of milliseconds past between function calls.
 
 ###Method
 
-integer runtime([int $precision, int $output]);
+integer runtime ([int $precision, int $output]);
 ###Parameters
 
 	integer $precision (optional)
@@ -158,7 +162,7 @@ Returns a string or file encoded as sha256.
 
 ###Method
 
-string sha(string|filename $content [, string $type]);
+string sha (string|filename $content [, string $type]);
 ###Parameters
 
 	string|filename $content
@@ -179,7 +183,7 @@ Creates an HTML DOM element with content and attributes utilizing only one funct
 
 ###Method
 
-object create(string $tag, [string|object $content, array $attribs]);
+object create (string $tag [, string|object $content, array $attribs]);
 ###Parameters
 
 	string $tag
@@ -190,11 +194,11 @@ object create(string $tag, [string|object $content, array $attribs]);
 	$DOM->create('p', 'Lorem ipsum dolor sit amet.', array('class'=>'demo'));
 ##$DOM->getElementById
 
-Extends the default getElementById function to allow for access to imported elements.
+Extends the default getElementById function to allow for access to imported/created elements.
 
 ###Method
 
-object getElementById(string $name);
+object|boolean getElementById (string $name);
 ###Parameters
 
 	string $name
@@ -207,7 +211,7 @@ Imports an external HTML source as a document fragment. (Notice: Must be valid H
 
 ###Method
 
-object import(string|filename $string);
+object import (string|filename $string);
 ###Parameters
 
 	string|filename $string
@@ -220,7 +224,7 @@ Returns the next sibling based on an integer.
 
 ###Method
 
-object nextSiblings(object $object, [integer $num]);
+object|boolean nextSiblings (object $object [, integer $num]);
 ###Parameters
 
 	object $object
@@ -228,27 +232,27 @@ object nextSiblings(object $object, [integer $num]);
 ###Examples
 
 	$DOM->nextSiblings($object, 5);
-##$DOM->prependChild
+##$DOM->prepend
 
 Prepends an object before the specific node.
 
 ###Method
 
-object prependChild(object $object, object $node);
+object prepend (object $object, object $node);
 ###Parameters
 
 	object $object
 	object $node
 ###Examples
 
-	$DOM->prependChild($DOM->create('div', 'test'), $node);
+	$DOM->prepend($DOM->create('div', 'test'), $node);
 ##$DOM->query
 
 Queries the DOM using XPath.
 
 ###Method
 
-object query(string $query);
+object query (string $query);
 ###Parameters
 
 	string $query
@@ -261,7 +265,7 @@ Removes one or more HTML DOM elements.
 
 ###Method
 
-boolean remove(object $object);
+object|boolean remove (object $object);
 ###Parameters
 
 	object $object
@@ -269,3 +273,17 @@ boolean remove(object $object);
 
 	$DOM->remove($DOM->getElementById('demo'));
 	$DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
+##$DOM->replace
+
+Replaces one object with another.
+
+###Method
+
+object replace (object $object, object $node);
+###Parameters
+
+	object $object
+	object $node
+###Examples
+
+	$DOM->replace($DOM->create('select'), $DOM->getElementById('dropdown'));
