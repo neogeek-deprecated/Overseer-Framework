@@ -119,8 +119,12 @@ if (!function_exists('getbrowser')) {
 	
 	function getbrowser ($http_user_agent = null) {
 	
-		if ($http_user_agent == null) { $http_user_agent = $_SERVER['HTTP_USER_AGENT']; }
-	
+		if ($http_user_agent == null) {
+			
+			$http_user_agent = $_SERVER['HTTP_USER_AGENT'];
+			
+		}
+		
 		if (preg_match('/Opera(?:[\/ ]([0-9.]+))?(?:.*Version[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
 			
 			return array('Opera', isset($matches[2]) ? $matches[2] : (isset($matches[1]) ? $matches[1] : null));
@@ -141,7 +145,11 @@ if (!function_exists('getbrowser')) {
 			
 			return array('Internet Explorer', isset($matches[1]) ? $matches[1] : null);
 		
-		} else { return false; }
+		} else {
+			
+			return false;
+			
+		}
 	
 	}
 	
@@ -298,7 +306,11 @@ if (!function_exists('mysqli_transaction')) {
 		$attribs = array_slice(func_get_args(), 3);
 		$results = $params = $tmp = array();
 		
-		if (!$result = $resource->prepare(preg_replace('/[\'"%]+\?[\'"%]+/', '?', $query))) { return false; }
+		if (!$result = $resource->prepare(preg_replace('/[\'"%]+\?[\'"%]+/', '?', $query))) {
+			
+			return false;
+			
+		}
 		
 		foreach ($attribs as $key => $value) {
 			
@@ -540,7 +552,11 @@ if (!class_exists('DOM')) {
 				
 				foreach ($elements as $element) {
 					
-					if ($element->getAttribute('id') == $name) { return $element; }
+					if ($element->getAttribute('id') == $name) {
+						
+						return $element;
+						
+					}
 					
 				}
 				
@@ -667,7 +683,9 @@ if (!class_exists('DOM')) {
 			if (isset($object->length)) {
 				
 				while ($object->length) {
+					
 					$this->remove($object->item($object->length -1));
+					
 				}
 				
 				return true;
