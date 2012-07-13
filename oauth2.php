@@ -1,5 +1,7 @@
 <?php
 
+# namespace NeoGeek\OverseerFramework;
+
 /**
  * OAuth2
  * A simple PHP class for establishing OAuth 2.0 connections.

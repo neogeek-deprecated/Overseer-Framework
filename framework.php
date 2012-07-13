@@ -1,5 +1,7 @@
 <?php
 
+# namespace NeoGeek\OverseerFramework;
+
 /* ------------------------------------------------------------
  
  Overseer Framework, build 81, 2012-06-06 03:26:00
@@ -373,15 +375,17 @@ if (!function_exists('mysqli_transaction')) {
 
 if (!function_exists('path_info')) {
 	
-	if (!isset($_SERVER['PATH_INFO']) && isset($_SERVER['ORIG_PATH_INFO'])) {
-		
-		$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
-		
-	}
-	
 	function path_info ($offset = 0) {
 		
-		$matches = preg_split('/\//', isset($_SERVER['PATH_INFO'], $_SERVER['SCRIPT_NAME']) && ($_SERVER['PATH_INFO'] != $_SERVER['SCRIPT_NAME']) ? $_SERVER['PATH_INFO'] : null, null, PREG_SPLIT_NO_EMPTY);
+		if (isset($_SERVER['PATH_INFO'])) {
+			
+			$matches = preg_split('/\//', $_SERVER['PATH_INFO'], null, PREG_SPLIT_NO_EMPTY);
+			
+		} else if (isset($_SERVER['ORIG_PATH_INFO'])) {
+			
+			$matches = preg_split('/\//', $_SERVER['ORIG_PATH_INFO'], null, PREG_SPLIT_NO_EMPTY);
+			
+		}
 		
 		return isset($matches[$offset]) ? $matches[$offset] : false;
 		
@@ -489,7 +493,7 @@ if (!function_exists('sha')) {
 
 if (!class_exists('DOM')) {
 	
-	class DOM extends DOMDocument
+	class DOM extends \DOMDocument
 	{
 		
 		/**
