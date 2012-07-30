@@ -47,7 +47,19 @@ if (!function_exists('check_referer')) {
 
 	function check_referer ($url = '') {
 		
-		return isset($_SERVER['HTTP_REFERER']) ? strpos($_SERVER['HTTP_REFERER'], $url ? $url : $_SERVER['REQUEST_URI']) !== false : false;
+		if (!$url) {
+			
+			$url = $_SERVER['REQUEST_URI'];
+			
+		}
+		
+		if (isset($_SERVER['HTTP_REFERER'])) {
+			
+			return strpos($_SERVER['HTTP_REFERER'], $url) !== false;
+			
+		}
+		
+		return false;
 		
 	}
 
@@ -71,7 +83,9 @@ if (!function_exists('fetch_remote_file')) {
 	
 	function fetch_remote_file ($url, $cache = '', $expire = -1) {
 		
-		if (!file_exists($cache) || !$expire || filemtime($cache) < (is_numeric($expire) ? $expire : strtotime($expire))) {
+		$expire = is_numeric($expire) ? $expire : strtotime($expire);
+		
+		if (!file_exists($cache) || !$expire || filemtime($cache) < $expire) {
 			
 			$ch = curl_init($url);
 			
@@ -127,32 +141,28 @@ if (!function_exists('getbrowser')) {
 			
 		}
 		
-		if (preg_match('/Opera(?:[\/ ]([0-9.]+))?(?:.*Version[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
-			
-			return array('Opera', isset($matches[2]) ? $matches[2] : (isset($matches[1]) ? $matches[1] : null));
+		$browsers = array(
+			'Opera' => '/Opera(?:[\/ ]([0-9.]+))?(?:.*Version[\/ ]([0-9.]+))?/i',
+			'Google Chrome' => '/Chrome\/([0-9.]+)?/i',
+			'Safari' => '/(?:Version\/([0-9.]+).*)?Safari[\/ ][0-9.]+?/i',
+			'Firefox' => '/Firefox(?:[\/\( ]?([0-9.]+))?/i',
+			'Internet Explorer' => '/MSIE(?:[\/ ]([0-9.]+))?/i'
+		);
 		
-		} else if (preg_match('/Chrome\/([0-9.]+)?/i', $http_user_agent, $matches)) {
+		foreach ($browsers as $browser => $regex) {
 			
-			return array('Google Chrome', isset($matches[1]) ? $matches[1] : null);
-		
-		} else if (preg_match('/(?:Version\/([0-9.]+).*)?Safari[\/ ][0-9.]+?/i', $http_user_agent, $matches)) {
-			
-			return array('Safari', isset($matches[1]) ? $matches[1] : null);
-		
-		} else if (preg_match('/Firefox(?:[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
-			
-			return array('Firefox', isset($matches[1]) ? $matches[1] : null);
-		
-		} else if (preg_match('/MSIE(?:[\/ ]([0-9.]+))?/i', $http_user_agent, $matches)) {
-			
-			return array('Internet Explorer', isset($matches[1]) ? $matches[1] : null);
-		
-		} else {
-			
-			return false;
+			if (preg_match($regex, $http_user_agent, $matches)) {
+				
+				if (isset($matches[2])) { $matches[1] = $matches[2]; }
+				
+				return array($browser, isset($matches[1]) ? $matches[1] : null);
+				
+			}
 			
 		}
-	
+		
+		return false;
+		
 	}
 	
 }
@@ -222,7 +232,13 @@ if (!function_exists('mysql_fetch_results')) {
 			
 		} else {
 			
-			$results = ($insert_id = mysql_insert_id()) ? $insert_id : mysql_affected_rows();
+			$results = mysql_insert_id();
+			
+			if (!$results) {
+				
+				$results = mysql_affected_rows();
+				
+			}
 			
 		}
 		
@@ -273,7 +289,13 @@ if (!function_exists('mysqli_fetch_results')) {
 			
 		} else {
 			
-			$results = ($insert_id = mysqli_insert_id($resource)) ? $insert_id : mysqli_affected_rows($resource);
+			$results = mysqli_insert_id($resource);
+			
+			if (!$results) {
+				
+				$results = mysqli_affected_rows($resource);
+				
+			}
 			
 		}
 		
