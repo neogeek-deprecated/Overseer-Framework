@@ -580,7 +580,7 @@ if (!class_exists('DOM')) {
 				
 				if ($value !== null) {
 					
-					$value = string($value);
+					$value = (string)$value;
 					
 				}
 				
