@@ -83,7 +83,11 @@ if (!function_exists('fetch_remote_file')) {
 	
 	function fetch_remote_file ($url, $cache = '', $expire = -1) {
 		
-		$expire = is_numeric($expire) ? $expire : strtotime($expire);
+		if (!is_numeric($expire)) {
+			
+			$expire = strtotime($expire);
+			
+		}
 		
 		if (!file_exists($cache) || !$expire || filemtime($cache) < $expire) {
 			
@@ -126,7 +130,7 @@ if (!function_exists('fetch_remote_file')) {
  * @param string $http_user_agent (optional)
  * @return array|boolean
  * @example getbrowser();
- * @example getbrowser('Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4')
+ * @example getbrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8) AppleWebKit/536.25 (KHTML, like Gecko) Version/6.0 Safari/536.25')
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
  */
@@ -153,9 +157,23 @@ if (!function_exists('getbrowser')) {
 			
 			if (preg_match($regex, $http_user_agent, $matches)) {
 				
-				if (isset($matches[2])) { $matches[1] = $matches[2]; }
+				if (isset($matches[2])) {
+					
+					$matches[1] = $matches[2];
+					
+				}
 				
-				return array($browser, isset($matches[1]) ? $matches[1] : null);
+				if (isset($matches[1])) {
+					
+					$version = $matches[1];
+					
+				} else {
+					
+					$version = null;
+					
+				}
+				
+				return array($browser, $version);
 				
 			}
 			
@@ -188,7 +206,9 @@ if (!function_exists('getcsv')) {
 			
 		}
 		
-		return array_map('str_getcsv', preg_split('/\n|\r+/', $string, null, PREG_SPLIT_NO_EMPTY));
+		$lines = preg_split('/\n|\r+/', $string, null, PREG_SPLIT_NO_EMPTY);
+		
+		return array_map('str_getcsv', $lines);
 		
 	}
 	
@@ -387,8 +407,9 @@ if (!function_exists('mysqli_transaction')) {
 /**
  * path_info
  * Returns virtual path names based on offset.
- * @method string|boolean path_info ([integer $offset]);
+ * @method string|boolean path_info ([integer $offset, string $path]);
  * @param integer $offset (optional)
+ * @param string $path (optional)
  * @return string|boolean
  * @example echo path_info(1);
  * @author Neo Geek <neo@neo-geek.net>
@@ -397,19 +418,23 @@ if (!function_exists('mysqli_transaction')) {
 
 if (!function_exists('path_info')) {
 	
-	function path_info ($offset = 0) {
+	function path_info ($offset = 0, $path = null) {
 		
-		if (isset($_SERVER['PATH_INFO'])) {
+		if (!$path) {
 			
-			$matches = preg_split('/\//', $_SERVER['PATH_INFO'], null, PREG_SPLIT_NO_EMPTY);
-			
-		} else if (isset($_SERVER['ORIG_PATH_INFO'])) {
-			
-			$matches = preg_split('/\//', $_SERVER['ORIG_PATH_INFO'], null, PREG_SPLIT_NO_EMPTY);
+			$path = $_SERVER['PATH_INFO'];
 			
 		}
 		
-		return isset($matches[$offset]) ? $matches[$offset] : false;
+		$matches = preg_split('/\//', $path, null, PREG_SPLIT_NO_EMPTY);
+		
+		if (isset($matches[$offset])) {
+			
+			return $matches[$offset];
+			
+		}
+		
+		return false;
 		
 	}
 	
@@ -531,7 +556,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function create ($tag, $content = null, $attribs = array()) {
+		final public function create ($tag, $content = null, $attribs = array()) {
 			
 			$element = $this->createElement($tag);
 			
@@ -547,7 +572,19 @@ if (!class_exists('DOM')) {
 			
 			foreach ($attribs as $key => $value) {
 				
-				$element->setAttribute((is_string($key) ? $key : (string)$value), $value!==null ? (string)$value : null);
+				if (!is_string($key)) {
+					
+					$key = (string)$value;
+					
+				}
+				
+				if ($value !== null) {
+					
+					$value = string($value);
+					
+				}
+				
+				$element->setAttribute($key, $value);
 				
 			}
 			
@@ -566,13 +603,11 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function getElementById ($name) {
+		final public function getElementById ($name) {
 			
-			if ($element = parent::getElementById($name)) {
-				
-				return $element;
-				
-			} else {
+			$element = parent::getElementById($name);
+			
+			if (!$element) {
 				
 				$elements = $this->getElementsByTagName('*');
 				
@@ -585,6 +620,10 @@ if (!class_exists('DOM')) {
 					}
 					
 				}
+				
+			} else {
+				
+				return $element;
 				
 			}
 			
@@ -603,7 +642,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function import ($string) {
+		final public function import ($string) {
 			
 			$element = $this->createDocumentFragment();
 			
@@ -631,11 +670,13 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function nextSiblings ($object, $num = 1) {
+		final public function nextSiblings ($object, $num = 1) {
 			
 			while ($num) {
 				
-				if ($object = $object->nextSibling) {
+				$object = $object->nextSibling;
+				
+				if ($object) {
 					
 					if ($object->nodeType == XML_ELEMENT_NODE) {
 						
@@ -667,7 +708,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function prepend ($object, $node) {
+		final public function prepend ($object, $node) {
 			
 			return $node->parentNode->insertBefore($object, $node);
 			
@@ -684,7 +725,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function query ($query) {
+		final public function query ($query) {
 			
 			$xpath = new DOMXPath($this);
 			
@@ -704,7 +745,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function remove ($object) {
+		final public function remove ($object) {
 			
 			if (isset($object->length)) {
 				
@@ -736,7 +777,7 @@ if (!class_exists('DOM')) {
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		public function replace ($object, $node) {
+		final public function replace ($object, $node) {
 			
 			return $node->parentNode->replaceChild($object, $node);
 			

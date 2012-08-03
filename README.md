@@ -47,7 +47,7 @@ array|boolean getbrowser ([string $http_user_agent]);
 ###Examples
 
 	getbrowser();
-	getbrowser('Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_6; en-us) AppleWebKit/533.19.4 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4')
+	getbrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8) AppleWebKit/536.25 (KHTML, like Gecko) Version/6.0 Safari/536.25')
 ##getcsv
 
 Returns CSV file or string as an array.
@@ -120,10 +120,11 @@ Returns virtual path names based on offset.
 
 ###Method
 
-string|boolean path_info ([integer $offset]);
+string|boolean path_info ([integer $offset, string $path]);
 ###Parameters
 
 	integer $offset (optional)
+	string $path (optional)
 ###Examples
 
 	echo path_info(1);
