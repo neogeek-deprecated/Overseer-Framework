@@ -68,9 +68,9 @@ if (!function_exists('check_referer')) {
 /**
  * fetch_remote_file
  * Fetches an external file using the built-in PHP library CURL. Also allows for specifying a cached version and expiration time.
- * @method string fetch_remote_file (string $url [, string $cache, string|integer $expire]);
+ * @method string fetch_remote_file (string $url [, filename $cache, string|integer $expire]);
  * @param string $url
- * @param string $cache (optional)
+ * @param filename $cache (optional)
  * @param string|integer $expire (optional)
  * @return string
  * @example fetch_remote_file('http://www.example.com/file.xml');
@@ -185,9 +185,9 @@ if (!function_exists('getbrowser')) {
 
 /**
  * getcsv
- * Returns CSV file or string as an array.
- * @method array getcsv (string $string);
- * @param string $string
+ * Returns CSV file or string as a multidimensional array.
+ * @method array getcsv (string|filename $string);
+ * @param string|filename $string
  * @return array
  * @example getcsv('data.csv');
  * @author Neo Geek <neo@neo-geek.net>

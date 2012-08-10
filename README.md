@@ -24,11 +24,11 @@ Fetches an external file using the built-in PHP library CURL. Also allows for sp
 
 ###Method
 
-string fetch_remote_file (string $url [, string $cache, string|integer $expire]);
+string fetch_remote_file (string $url [, filename $cache, string|integer $expire]);
 ###Parameters
 
 	string $url
-	string $cache (optional)
+	filename $cache (optional)
 	string|integer $expire (optional)
 ###Examples
 
@@ -50,14 +50,14 @@ array|boolean getbrowser ([string $http_user_agent]);
 	getbrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8) AppleWebKit/536.25 (KHTML, like Gecko) Version/6.0 Safari/536.25')
 ##getcsv
 
-Returns CSV file or string as an array.
+Returns CSV file or string as a multidimensional array.
 
 ###Method
 
-array getcsv (string $string);
+array getcsv (string|filename $string);
 ###Parameters
 
-	string $string
+	string|filename $string
 ###Examples
 
 	getcsv('data.csv');
