@@ -204,7 +204,7 @@ if (!function_exists('getcsv')) {
 			
 		}
 		
-		$lines = preg_split('/\n|\r+/', $string, null, PREG_SPLIT_NO_EMPTY);
+		$lines = preg_split('/\n|\r/', $string, null, PREG_SPLIT_NO_EMPTY);
 		
 		return array_map('str_getcsv', $lines);
 		
