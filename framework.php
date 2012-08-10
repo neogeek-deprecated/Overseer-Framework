@@ -580,12 +580,6 @@ if (!class_exists('DOM')) {
 					
 				}
 				
-				if ($value !== null) {
-					
-					$value = (string)$value;
-					
-				}
-				
 				$element->setAttribute($key, $value);
 				
 			}
@@ -596,18 +590,18 @@ if (!class_exists('DOM')) {
 		
 		/**
 		 * getElementById
-		 * Extends the default getElementById function to allow for access to imported/created elements.
-		 * @method object|boolean getElementById (string $name);
-		 * @param string $name
+		 * Extends the default getElementById function to allow for access to imported elements.
+		 * @method object|boolean getElementById (string $id);
+		 * @param string $id
 		 * @return object|boolean
 		 * @example $DOM->getElementById('test'));
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
 		
-		final public function getElementById ($name) {
+		final public function getElementById ($id) {
 			
-			$element = parent::getElementById($name);
+			$element = parent::getElementById($id);
 			
 			if (!$element) {
 				
@@ -615,7 +609,7 @@ if (!class_exists('DOM')) {
 				
 				foreach ($elements as $element) {
 					
-					if ($element->getAttribute('id') == $name) {
+					if ($element->getAttribute('id') == $id) {
 						
 						return $element;
 						
@@ -700,7 +694,7 @@ if (!class_exists('DOM')) {
 		
 		/**
 		 * prepend
-		 * Prepends an object before the specific node.
+		 * Prepends an object before the specified node.
 		 * @method object prepend (object $object, object $node);
 		 * @param object $object
 		 * @param object $node
@@ -769,7 +763,7 @@ if (!class_exists('DOM')) {
 		
 		/**
 		 * replace
-		 * Replaces one object with another.
+		 * Replaces the specified with another.
 		 * @method object replace (object $object, object $node);
 		 * @param object $object
 		 * @param object $node

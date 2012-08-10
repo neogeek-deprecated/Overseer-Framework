@@ -195,14 +195,14 @@ object create (string $tag [, string|object $content, array $attribs]);
 	$DOM->create('p', 'Lorem ipsum dolor sit amet.', array('class'=>'demo'));
 ##$DOM->getElementById
 
-Extends the default getElementById function to allow for access to imported/created elements.
+Extends the default getElementById function to allow for access to imported elements.
 
 ###Method
 
-object|boolean getElementById (string $name);
+object|boolean getElementById (string $id);
 ###Parameters
 
-	string $name
+	string $id
 ###Examples
 
 	$DOM->getElementById('test'));
@@ -235,7 +235,7 @@ object|boolean nextSiblings (object $object [, integer $num]);
 	$DOM->nextSiblings($object, 5);
 ##$DOM->prepend
 
-Prepends an object before the specific node.
+Prepends an object before the specified node.
 
 ###Method
 
@@ -276,7 +276,7 @@ object|boolean remove (object $object);
 	$DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
 ##$DOM->replace
 
-Replaces one object with another.
+Replaces the specified with another.
 
 ###Method
 
