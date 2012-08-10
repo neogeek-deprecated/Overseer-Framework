@@ -150,11 +150,10 @@ Returns the number of milliseconds past between function calls.
 
 ###Method
 
-integer runtime ([int $precision, int $output]);
+integer runtime ([int $precision]);
 ###Parameters
 
 	integer $precision (optional)
-	integer $output (optional)
 ###Examples
 
 	echo 'This script took ' . runtime(2) . ' millisecond(s) to run.';

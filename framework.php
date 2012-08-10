@@ -471,10 +471,9 @@ if (!function_exists('print_array')) {
 /**
  * runtime
  * Returns the number of milliseconds past between function calls.
- * @method integer runtime ([int $precision, int $output]);
+ * @method integer runtime ([int $precision]);
  * @static integer $time
  * @param integer $precision (optional)
- * @param integer $output (optional)
  * @return integer
  * @example echo 'This script took ' . runtime(2) . ' millisecond(s) to run.';
  * @author Neo Geek <neo@neo-geek.net>
@@ -483,13 +482,17 @@ if (!function_exists('print_array')) {
 
 if (!function_exists('runtime')) {
 	
-	function runtime ($precision = 0, $output = 0) {
+	function runtime ($precision = 0) {
 		
 		static $time;
 		
 		if ($time) {
 			
 			$output = round((microtime(true) - (float)$time) * 10000, $precision);
+			
+		} else {
+			
+			$output = 0;
 			
 		}
 		
