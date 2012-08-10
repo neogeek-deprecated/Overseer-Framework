@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 81, 2012-06-06 03:26:00
+ Overseer Framework, build 81, 2012-08-09
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -93,7 +93,7 @@ if (!function_exists('fetch_remote_file')) {
 			
 			$ch = curl_init($url);
 			
-			if (parse_url($url, PHP_URL_SCHEME) == 'https') {
+			if (strtolower(parse_url($url, PHP_URL_SCHEME)) == 'https') {
 				
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 				
