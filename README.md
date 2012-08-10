@@ -128,6 +128,7 @@ string|boolean path_info ([integer $offset, string $path]);
 ###Examples
 
 	echo path_info(1);
+	echo path_info(1, 'user/neogeek');
 ##print_array
 
 Prints any number of arrays (or strings) to the output buffer surrounded by pre tags.

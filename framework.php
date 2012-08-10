@@ -410,6 +410,7 @@ if (!function_exists('mysqli_transaction')) {
  * @param string $path (optional)
  * @return string|boolean
  * @example echo path_info(1);
+ * @example echo path_info(1, 'user/neogeek');
  * @author Neo Geek <neo@neo-geek.net>
  * @copyright Copyright (c) 2012, Neo Geek
  */
