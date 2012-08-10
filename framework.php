@@ -159,11 +159,9 @@ if (!function_exists('getbrowser')) {
 				
 				if (isset($matches[2])) {
 					
-					$matches[1] = $matches[2];
+					$version = $matches[2];
 					
-				}
-				
-				if (isset($matches[1])) {
+				} else if (isset($matches[1])) {
 					
 					$version = $matches[1];
 					
