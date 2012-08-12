@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 81, 2012-08-09
+ Overseer Framework, build 82, 2012-08-11
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -343,54 +343,73 @@ if (!function_exists('mysqli_fetch_results')) {
 
 if (!function_exists('mysqli_transaction')) {
 	
-	function mysqli_transaction ($resource, $query, $types = '') {
+	function mysqli_transaction ($resource, $query) {
 		
-		$attribs = array_slice(func_get_args(), 3);
-		$results = $params = $tmp = array();
+		$result = $resource->prepare($query);
 		
-		if (!$result = $resource->prepare(preg_replace('/[\'"%]+\?[\'"%]+/', '?', $query))) {
+		if (!$result) {
 			
 			return false;
 			
 		}
 		
-		foreach ($attribs as $key => $value) {
+		if (func_num_args() > 3) {
 			
-			$attribs[$key] = &$attribs[$key];
+			$values = array_slice(func_get_args(), 2);
 			
-		}
-		
-		if ($types && $attribs) {
+			foreach ($values as $key => $value) {
+				
+				$values[$key] = &$values[$key];
+				
+			}
 			
-			call_user_func_array('mysqli_stmt_bind_param', array_merge(array($result, substr($types, 0, count($attribs))), $attribs));
+			call_user_func_array(array($result, 'bind_param'), $values);
 			
 		}
 		
 		$result->execute();
 		
-		if (!$meta = $result->result_metadata()) {
-			
-			return ($insert_id = $result->insert_id) ? $insert_id : $result->affected_rows;
-			
-		}
+		$meta = $result->result_metadata();
 		
-		while ($field = $meta->fetch_field()) {
+		if ($meta) {
 			
-			$params[] = &$row[$field->name];
+			$fields = $meta->fetch_fields();
 			
-		}
-		
-		call_user_func_array('mysqli_stmt_bind_result', array_merge(array($result), $params));
-		
-		while ($result->fetch()) {
-			
-			foreach ($row as $key => $value) {
+			foreach ($fields as $key => $value) {
 				
-				$tmp[$key] = $value;
+				$fields[$value->name] = &$fields[$value->name];
+				
+				unset($fields[$key]);
 				
 			}
 			
-			array_push($results, $tmp);
+			call_user_func_array(array($result, 'bind_result'), $fields);
+			
+			$results = array();
+			
+			while ($result->fetch()) {
+				
+				$row = array();
+			
+				foreach ($fields as $key => $value) {
+					
+					$row[$key] = $value;
+					
+				}
+				
+				array_push($results, $row);
+				
+			}
+			
+		} else {
+			
+			$results = $result->insert_id;
+			
+			if (!$results) {
+				
+				$results = $result->affected_rows;
+				
+			}
 			
 		}
 		
