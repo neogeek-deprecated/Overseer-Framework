@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 1, 2012-08-09
+ Overseer Framework, build 1, 2012-08-11
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -64,7 +64,7 @@ if (!class_exists('Router')) {
 			return $matches;
 		
 		}
-	
+		
 		final private function request ($path, $func) {
 			
 			$args = $this->parsePath($path);
@@ -78,7 +78,7 @@ if (!class_exists('Router')) {
 			return false;
 			
 		}
-	
+		
 		final public function __call ($name, $arguments) {
 			
 			if ($_SERVER['REQUEST_METHOD'] == strtoupper($name)) {

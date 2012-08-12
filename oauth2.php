@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 1, 2012-08-09
+ Overseer Framework, build 2, 2012-08-11
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -152,7 +152,7 @@ if (!class_exists('OAuth2')) {
 			
 			$ch = curl_init($url);
 			
-			if (parse_url($url, PHP_URL_SCHEME) == 'https') {
+			if (strtolower(parse_url($url, PHP_URL_SCHEME)) == 'https') {
 				
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 				
