@@ -413,7 +413,15 @@ if (!function_exists('mysqli_transaction')) {
 			
 		}
 		
+		$result->free_result();
+		
 		$result->close();
+		
+		while ($resource->more_results()) {
+			
+			$resource->next_result();
+			
+		}
 		
 		return $results;
 		
