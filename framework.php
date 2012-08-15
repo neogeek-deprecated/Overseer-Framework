@@ -303,7 +303,7 @@ if (!function_exists('mysqli_fetch_results')) {
 				
 			}
 			
-			$result->close();
+			$result->free();
 			
 		} else {
 			
@@ -314,6 +314,12 @@ if (!function_exists('mysqli_fetch_results')) {
 				$results = mysqli_affected_rows($resource);
 				
 			}
+			
+		}
+		
+		while ($resource->more_results()) {
+			
+			$resource->next_result();
 			
 		}
 		
