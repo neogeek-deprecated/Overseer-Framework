@@ -59,7 +59,7 @@ if (!class_exists('Router')) {
 			
 			$server_path = trim($_SERVER['PATH_INFO'], '/');
 			
-			preg_match('/^' . $path . '$/i', $server_path, $matches);
+			preg_match('/^' . $path . '/i', $server_path, $matches);
 			
 			return $matches;
 		
@@ -71,7 +71,7 @@ if (!class_exists('Router')) {
 			
 			if ($args) {
 				
-				return $func($args);
+				return call_user_func_array($func, array($args, $path));
 				
 			}
 			
