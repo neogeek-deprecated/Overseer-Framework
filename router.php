@@ -79,6 +79,18 @@ if (!class_exists('Router')) {
 			
 		}
 		
+		final static function setContentType ($type = 'application/json') {
+			
+			header('Content-type: ' . $type . '; charset=UTF-8');
+			
+		}
+		
+		final static function setStatus ($code = 200, $status = 'OK') {
+			
+			header('HTTP/1.1 ' . $code . ' ' . $status);
+			
+		}
+		
 		final public function __call ($name, $arguments) {
 			
 			if ($_SERVER['REQUEST_METHOD'] == strtoupper($name)) {
