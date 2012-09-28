@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 82, 2012-08-11
+ Overseer Framework, build 83, 2012-09-27
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -581,7 +581,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * create
 		 * Creates an HTML DOM element with content and attributes utilizing only one function call.
-		 * @method object create (string $tag [, string|object $content, array $attribs]);
+		 * @method object DOM::create (string $tag [, string|object $content, array $attribs]);
 		 * @param string $tag
 		 * @param string|object $content (optional)
 		 * @param array $attribs (optional)
@@ -624,7 +624,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * getElementById
 		 * Extends the default getElementById function to allow for access to imported elements.
-		 * @method object|boolean getElementById (string $id);
+		 * @method object|boolean DOM::getElementById (string $id);
 		 * @param string $id
 		 * @return object|boolean
 		 * @example $DOM->getElementById('test'));
@@ -663,7 +663,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * import
 		 * Imports an external HTML source as a document fragment. (Notice: Must be valid HTML)
-		 * @method object import (string|filename $string);
+		 * @method object DOM::import (string|filename $string);
 		 * @param string|filename $string
 		 * @return object
 		 * @example $DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
@@ -690,7 +690,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * nextSiblings
 		 * Returns the next sibling based on an integer.
-		 * @method object|boolean nextSiblings (object $object [, integer $num]);
+		 * @method object|boolean DOM::nextSiblings (object $object [, integer $num]);
 		 * @param object $object
 		 * @param integer $num (optional)
 		 * @return object|boolean
@@ -728,7 +728,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * prepend
 		 * Prepends an object before the specified node.
-		 * @method object prepend (object $object, object $node);
+		 * @method object DOM::prepend (object $object, object $node);
 		 * @param object $object
 		 * @param object $node
 		 * @return object
@@ -746,7 +746,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * query
 		 * Queries the DOM using XPath.
-		 * @method object query (string $query);
+		 * @method object DOM::query (string $query);
 		 * @param string $query
 		 * @return object
 		 * @example $DOM->query('//div');
@@ -765,7 +765,7 @@ if (!class_exists('DOM')) {
 		/**
 		 * remove
 		 * Removes one or more HTML DOM elements.
-		 * @method object|boolean remove (object $object);
+		 * @method object|boolean DOM::remove (object $object);
 		 * @param object $object
 		 * @return object|boolean
 		 * @example $DOM->remove($DOM->getElementById('demo'));
@@ -792,12 +792,14 @@ if (!class_exists('DOM')) {
 				
 			}
 			
+			return false;
+			
 		}
 		
 		/**
 		 * replace
-		 * Replaces the specified with another.
-		 * @method object replace (object $object, object $node);
+		 * Replaces the specified node with another object.
+		 * @method object DOM::replace (object $object, object $node);
 		 * @param object $object
 		 * @param object $node
 		 * @return object
