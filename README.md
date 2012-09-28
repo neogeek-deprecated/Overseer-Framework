@@ -184,7 +184,7 @@ Creates an HTML DOM element with content and attributes utilizing only one funct
 
 ###Method
 
-object create (string $tag [, string|object $content, array $attribs]);
+object DOM::create (string $tag [, string|object $content, array $attribs]);
 ###Parameters
 
 	string $tag
@@ -199,7 +199,7 @@ Extends the default getElementById function to allow for access to imported elem
 
 ###Method
 
-object|boolean getElementById (string $id);
+object|boolean DOM::getElementById (string $id);
 ###Parameters
 
 	string $id
@@ -212,7 +212,7 @@ Imports an external HTML source as a document fragment. (Notice: Must be valid H
 
 ###Method
 
-object import (string|filename $string);
+object DOM::import (string|filename $string);
 ###Parameters
 
 	string|filename $string
@@ -225,7 +225,7 @@ Returns the next sibling based on an integer.
 
 ###Method
 
-object|boolean nextSiblings (object $object [, integer $num]);
+object|boolean DOM::nextSiblings (object $object [, integer $num]);
 ###Parameters
 
 	object $object
@@ -239,7 +239,7 @@ Prepends an object before the specified node.
 
 ###Method
 
-object prepend (object $object, object $node);
+object DOM::prepend (object $object, object $node);
 ###Parameters
 
 	object $object
@@ -253,7 +253,7 @@ Queries the DOM using XPath.
 
 ###Method
 
-object query (string $query);
+object DOM::query (string $query);
 ###Parameters
 
 	string $query
@@ -266,7 +266,7 @@ Removes one or more HTML DOM elements.
 
 ###Method
 
-object|boolean remove (object $object);
+object|boolean DOM::remove (object $object);
 ###Parameters
 
 	object $object
@@ -276,11 +276,11 @@ object|boolean remove (object $object);
 	$DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
 ##$DOM->replace
 
-Replaces the specified with another.
+Replaces the specified node with another object.
 
 ###Method
 
-object replace (object $object, object $node);
+object DOM::replace (object $object, object $node);
 ###Parameters
 
 	object $object
