@@ -91,7 +91,7 @@ if (!class_exists('Router')) {
 		
 		final static function setStatus ($code = 200, $status = 'OK') {
 			
-			if (headers_sent()) {
+			if (!headers_sent()) {
 				
 				header('HTTP/1.1 ' . $code . ' ' . $status);
 				
