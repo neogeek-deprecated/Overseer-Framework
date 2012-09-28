@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 2, 2012-09-27
+ Overseer Framework, build 3, 2012-09-27
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -162,6 +162,8 @@ if (!class_exists('OAuth2')) {
 				
 				curl_setopt($ch, CURLOPT_POST, true);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, parse_url($url, PHP_URL_QUERY));
+				
+				$url = preg_replace('/\?.+$/', '', $url);
 				
 			}
 			
