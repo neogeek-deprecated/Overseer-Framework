@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 1, 2012-08-11
+ Overseer Framework, build 2, 2012-09-27
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -42,7 +42,7 @@ if (!class_exists('Router')) {
 	class Router
 	{
 		
-		final private function parsePath ($path) {
+		final static function parsePath ($path) {
 			
 			if (!isset($_SERVER['PATH_INFO'])) {
 				
@@ -67,7 +67,7 @@ if (!class_exists('Router')) {
 		
 		final private function request ($path, $func) {
 			
-			$args = $this->parsePath($path);
+			$args = $this::parsePath($path);
 			
 			if ($args) {
 				
@@ -81,13 +81,21 @@ if (!class_exists('Router')) {
 		
 		final static function setContentType ($type = 'application/json') {
 			
-			header('Content-type: ' . $type . '; charset=UTF-8');
+			if (!headers_sent()) {
+				
+				header('Content-type: ' . $type . '; charset=UTF-8');
+				
+			}
 			
 		}
 		
 		final static function setStatus ($code = 200, $status = 'OK') {
 			
-			header('HTTP/1.1 ' . $code . ' ' . $status);
+			if (headers_sent()) {
+				
+				header('HTTP/1.1 ' . $code . ' ' . $status);
+				
+			}
 			
 		}
 		
