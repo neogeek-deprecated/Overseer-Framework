@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 2, 2012-08-11
+ Overseer Framework, build 2, 2012-09-27
  http://overseerframework.com/
  
  Copyright (c) 2012 Neo Geek
@@ -73,7 +73,7 @@ if (!class_exists('OAuth2')) {
 		/**
 		 * authenticate
 		 * Redirects the user to the specified authorize URL.
-		 * @method void authenticate ([string $scope]);
+		 * @method void OAuth2::authenticate ([string $scope]);
 		 * @param string $scope (optional)
 		 * @return void
 		 * @example $OAuth2->authenticate();
@@ -92,10 +92,10 @@ if (!class_exists('OAuth2')) {
 		/**
 		 * callback
 		 * Returns the callback response based on OAuth2 callback GET variables.
-		 * @method void callback (function $func);
+		 * @method void OAuth2::callback (function $func);
 		 * @param function func
 		 * @return void
-		 * @example $OAuth2->callback(function($return) { echo OAuth2::parseToken($return); });
+		 * @example $OAuth2->callback(function ($return) { echo OAuth2::parseToken($return); });
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2012, Neo Geek
 		 */
@@ -110,8 +110,8 @@ if (!class_exists('OAuth2')) {
 		
 		/**
 		 * parseToken
-		 * Return the access_token from a OAuth2 callback request.
-		 * @method string|boolean parseToken (string $string);
+		 * Returns the access_token from a OAuth2 callback request.
+		 * @method string|boolean OAuth2::parseToken (string $string);
 		 * @param string $string
 		 * @return string|boolean
 		 * @example echo OAuth2::parseToken($return);
@@ -138,7 +138,7 @@ if (!class_exists('OAuth2')) {
 		/**
 		 * request
 		 * Initiates a curl request using either GET or POST.
-		 * @method string request (string $url [, boolean $post]);
+		 * @method string OAuth2::request (string $url [, boolean $post]);
 		 * @param string $url
 		 * @param boolean $post (optional)
 		 * @return string
