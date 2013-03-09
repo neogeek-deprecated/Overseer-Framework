@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 84, 2013-03-04
+ Overseer Framework, build 85, 2013-03-09
  http://overseerframework.com/
  
  Copyright (c) 2013 Neo Geek
@@ -236,21 +236,79 @@ if (!function_exists('markdown')) {
 		
 		// Headlines 1-6
 		for ($i = 6; $i > 0; $i--) {
+			
 			$string = preg_replace(sprintf('/(?:^|\n)%s([^\n]+)/', str_repeat('#', $i)),
-				sprintf('<h%d>\1</h%d>', $i, $i), $string);
+				sprintf(PHP_EOL . '<h%d>\1</h%d>', $i, $i), $string);
+			
 		}
 		
+		// Ordered Lists
+		$string = preg_replace_callback('/(?:^|\n)[0-9]+\.\s+(.+?)(?=\n\n|$)/s', function ($matches) {
+			
+			$items = preg_split('/\n[0-9]+\.\s+/', $matches[1], null, PREG_SPLIT_NO_EMPTY);
+			
+			return PHP_EOL . '<ol><li>' . implode('</li><li>', $items) . '</li></ol>';
+			
+		}, $string);
+		
+		// Unordered Lists
+		$string = preg_replace_callback('/(?:^|\n)[\-\*]\s+(.+?)(?=\n\n|$)/s', function ($matches) {
+			
+			$items = preg_split('/\n[\-\*]\s+/', $matches[1], null, PREG_SPLIT_NO_EMPTY);
+			
+			return PHP_EOL . '<ul><li>' . implode('</li><li>', $items) . '</li></ul>';
+			
+		}, $string);
+		
 		// Blockquotes
-		$string = preg_replace('/(?:^|\n)>{1,}\s*([^\n]+)/', '<blockquote>\1</blockquote>', $string);
+		$string = preg_replace_callback('/(?:^|\n)>{1,}\s+(.+?)(?=\n\n|$)/s', function ($matches) {
+			
+			return PHP_EOL . '<blockquote>' . preg_replace('/\n>{1,}\s+/', '', $matches[1]) . '</blockquote>';
+			
+		}, $string);
+		
+		// Code Blocks
+		$string = preg_replace_callback('/(?:^|\n)\t(.+?)(?=\n\n|$)/s', function ($matches) {
+			
+			return PHP_EOL . '<pre>' . preg_replace('/(\n)\t/', '\1', $matches[1]) . '</pre>';
+			
+		}, $string);
+		
+		// Horizontal Rules
+		$string = preg_replace('/(?:^|\n)(\-|\*){3,}/', PHP_EOL . '<hr>', $string);
 		
 		// Paragraphs
-		$string = preg_replace('/(?:^|\n+)([^<][^\n]+[^>])/', '<p>\1</p>', $string);
+		$string = preg_replace('/(?:^|\n)([^<\n].+[^>\n])(?=\n\n|$)/', PHP_EOL . '<p>\1</p>', $string);
 		
 		// Images
-		$string = preg_replace('/\!\[([^\]]+)\]\(([^\)]+)\)/', '<img src="\2" alt="\1">', $string);
+		$string = preg_replace_callback('/\!\[([^\]]+)\]\(([^"\)]+)(?:\s"(.+)")?\)/', function ($matches) {
+			
+			if (isset($matches[3])) {
+				
+				return sprintf('<img src="%s" alt="%s" title="%s">', $matches[2], $matches[1], $matches[3]);
+				
+			} else {
+				
+				return sprintf('<img src="%s" alt="%s">', $matches[2], $matches[1]);
+				
+			}
+			
+		}, $string);
 		
 		// Anchors
-		$string = preg_replace('/\[([^\]]+)\]\(([^\)]+)\)/', '<a href="\2">\1</a>', $string);
+		$string = preg_replace_callback('/\[([^\]]+)\]\(([^"\)]+)(?:\s"(.+)")?\)/', function ($matches) {
+			
+			if (isset($matches[3])) {
+				
+				return sprintf('<a href="%s" title="%s">%s</a>', $matches[2], $matches[3], $matches[1]);
+				
+			} else {
+				
+				return sprintf('<a href="%s">%s</a>', $matches[2], $matches[1]);
+				
+			}
+			
+		}, $string);
 		
 		// Code
 		$string = preg_replace('/`([^`]+)`/', '<code>\1</code>', $string);
@@ -260,6 +318,9 @@ if (!function_exists('markdown')) {
 		
 		// Italics
 		$string = preg_replace('/_{1,2}([^_]+)_{1,2}/', '<i>\1</i>', $string);
+		
+		// Strikethrough
+		$string = preg_replace('/~{2}([^~]+)~{2}/', '<del>\1</del>', $string);
 		
 		return $string;
 		
