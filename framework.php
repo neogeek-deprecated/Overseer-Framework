@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 85, 2013-03-09
+ Overseer Framework, build 86, 2013-03-21
  http://overseerframework.com/
  
  Copyright (c) 2013 Neo Geek
@@ -234,93 +234,176 @@ if (!function_exists('markdown')) {
 			
 		}
 		
-		// Headlines 1-6
-		for ($i = 6; $i > 0; $i--) {
+		$rules = [
 			
-			$string = preg_replace(sprintf('/(?:^|\n)%s([^\n]+)/', str_repeat('#', $i)),
-				sprintf(PHP_EOL . '<h%d>\1</h%d>', $i, $i), $string);
+			// Headers
+			[
+				'regex' => '/(^|\n)(#{1,6})\s*([^#\n]+)#*/',
+				'callback' => function ($matches) {
+					
+					$count = strlen($matches[2]);
+					
+					$string = sprintf('<h%d>%s</h%d>', $count, $matches[3], $count);
+					
+					return $matches[1] . $string . $matches[1];
+					
+				}
+			],
+			
+			// Horizontal Rules
+			[
+				'regex' => '/(^|\n)(?:\-| \-|\*){3,}/',
+				'replace' => '\1<hr>\1'
+			],
+			
+			// Ordered List
+			[
+				'regex' => '/(^|\n)[0-9]+\.\s+(.+?)(?=\n\n|$)/s',
+				'callback' => function ($matches) {
+					
+					$items = preg_split('/\n[0-9]+\.\s+/', $matches[2], null, PREG_SPLIT_NO_EMPTY);
+					
+					return $matches[1] . '<ol><li>' . implode('</li><li>', $items) . '</li></ol>' . $matches[1];
+					
+				}
+			],
+			
+			// Unordered List
+			[
+				'regex' => '/(^|\n)[\-\*]\s+(.+?)(?=\n\n|$)/s',
+				'callback' => function ($matches) {
+					
+					$items = preg_split('/\n[\-\*]\s+/', $matches[2], null, PREG_SPLIT_NO_EMPTY);
+					
+					return $matches[1] . '<ul><li>' . implode('</li><li>', $items) . '</li></ul>' . $matches[1];
+					
+				}
+			],
+			
+			// Blockquotes
+			[
+				'regex' => '/(^|\n)>{1,}\s*(.+?)(?=\n\n|$)/s',
+				'callback' => function ($matches) {
+					
+					$string = preg_replace('/\n>{1,}\s*/', ' ', $matches[2]);
+					
+					return $matches[1] . '<blockquote>' . $string . '</blockquote>' . $matches[1];
+					
+				}
+			],
+			
+			// Code Blocks
+			[
+				'regex' => '/(^|\n)\t(.+?)(?=\n\n|$)/s',
+				'callback' => function ($matches) {
+					
+					$string = htmlentities($matches[2]);
+					
+					$string = preg_replace('/(\n)\t/', '\1', $string);
+					$string = preg_replace('/\n/', '&#010;', $string);
+					
+					return $matches[1] . '<pre>' . $string . '</pre>' . $matches[1];
+					
+				}
+			],
+			
+			// Paragraphs
+			[
+				'regex' => '/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m',
+				'replace' => '\1<p>\2</p>\1'
+			],
+			
+			// Images
+			[
+				'regex' => '/\!\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
+				'callback' => function ($matches) {
+					
+					if (isset($matches[3])) {
+						
+						return sprintf('<img src="%s" alt="%s" title="%s">', $matches[2], $matches[1], $matches[3]);
+						
+					} else {
+						
+						return sprintf('<img src="%s" alt="%s">', $matches[2], $matches[1]);
+						
+					}
+					
+				}
+			],
+			
+			// Anchors
+			[
+				'regex' => '/\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
+				'callback' => function ($matches) {
+					
+					if (isset($matches[3])) {
+						
+						return sprintf('<a href="%s" title="%s">%s</a>', $matches[2], $matches[3], $matches[1]);
+						
+					} else {
+						
+						return sprintf('<a href="%s">%s</a>', $matches[2], $matches[1]);
+						
+					}
+					
+				}
+			],
+			
+			// Anchors/Link (Shorthand)
+			[
+				'regex' => '/<(http(?:s)?\:\/\/[^\>]+)>/i',
+				'replace' => '<a href="\1">\1</a>'
+			],
+			
+			// Anchors/Email (Shorthand)
+			[
+				'regex' => '/<([^>]+@.+\.[^<]+)>/',
+				'replace' => '<a href="mailto:\1">\1</a>'
+			],
+			
+			// Code
+			[
+				'regex' => '/`([^\s].*[^\s])`/',
+				'callback' => function ($matches) {
+					
+					return '<code>' . htmlentities($matches[1]) . '</code>';
+					
+				}
+			],
+			
+			// Bold
+			[
+				'regex' => '/(?:\*|_){2}([^\s].*?[^\s])(?:\*|_){2}/',
+				'replace' => '<strong>\1</strong>'
+			],
+			
+			// Italics
+			[
+				'regex' => '/(?:\*|_)([^\s].*?[^\s])(?:\*|_)/',
+				'replace' => '<em>\1</em>'
+			],
+			
+			// Strikethrough
+			[
+				'regex' => '/~{2}([^\s].*?[^\s])~{2}/',
+				'replace' => '<del>\1</del>'
+			]
+			
+		];
+		
+		foreach ($rules as $rule) {
+			
+			if (isset($rule['regex'], $rule['replace'])) {
+				
+				$string = preg_replace($rule['regex'], $rule['replace'], $string);
+				
+			} else if (isset($rule['regex'], $rule['callback'])) {
+				
+				$string = preg_replace_callback($rule['regex'], $rule['callback'], $string);
+				
+			}
 			
 		}
-		
-		// Ordered Lists
-		$string = preg_replace_callback('/(?:^|\n)[0-9]+\.\s+(.+?)(?=\n\n|$)/s', function ($matches) {
-			
-			$items = preg_split('/\n[0-9]+\.\s+/', $matches[1], null, PREG_SPLIT_NO_EMPTY);
-			
-			return PHP_EOL . '<ol><li>' . implode('</li><li>', $items) . '</li></ol>';
-			
-		}, $string);
-		
-		// Unordered Lists
-		$string = preg_replace_callback('/(?:^|\n)[\-\*]\s+(.+?)(?=\n\n|$)/s', function ($matches) {
-			
-			$items = preg_split('/\n[\-\*]\s+/', $matches[1], null, PREG_SPLIT_NO_EMPTY);
-			
-			return PHP_EOL . '<ul><li>' . implode('</li><li>', $items) . '</li></ul>';
-			
-		}, $string);
-		
-		// Blockquotes
-		$string = preg_replace_callback('/(?:^|\n)>{1,}\s+(.+?)(?=\n\n|$)/s', function ($matches) {
-			
-			return PHP_EOL . '<blockquote>' . preg_replace('/\n>{1,}\s+/', '', $matches[1]) . '</blockquote>';
-			
-		}, $string);
-		
-		// Code Blocks
-		$string = preg_replace_callback('/(?:^|\n)\t(.+?)(?=\n\n|$)/s', function ($matches) {
-			
-			return PHP_EOL . '<pre>' . preg_replace('/(\n)\t/', '\1', $matches[1]) . '</pre>';
-			
-		}, $string);
-		
-		// Horizontal Rules
-		$string = preg_replace('/(?:^|\n)(\-|\*){3,}/', PHP_EOL . '<hr>', $string);
-		
-		// Paragraphs
-		$string = preg_replace('/(?:^|\n)([^<\n].+[^>\n])(?=\n\n|$)/', PHP_EOL . '<p>\1</p>', $string);
-		
-		// Images
-		$string = preg_replace_callback('/\!\[([^\]]+)\]\(([^"\)]+)(?:\s"(.+)")?\)/', function ($matches) {
-			
-			if (isset($matches[3])) {
-				
-				return sprintf('<img src="%s" alt="%s" title="%s">', $matches[2], $matches[1], $matches[3]);
-				
-			} else {
-				
-				return sprintf('<img src="%s" alt="%s">', $matches[2], $matches[1]);
-				
-			}
-			
-		}, $string);
-		
-		// Anchors
-		$string = preg_replace_callback('/\[([^\]]+)\]\(([^"\)]+)(?:\s"(.+)")?\)/', function ($matches) {
-			
-			if (isset($matches[3])) {
-				
-				return sprintf('<a href="%s" title="%s">%s</a>', $matches[2], $matches[3], $matches[1]);
-				
-			} else {
-				
-				return sprintf('<a href="%s">%s</a>', $matches[2], $matches[1]);
-				
-			}
-			
-		}, $string);
-		
-		// Code
-		$string = preg_replace('/`([^`]+)`/', '<code>\1</code>', $string);
-		
-		// Bold
-		$string = preg_replace('/\*{1,2}([^\*]+)\*{1,2}/', '<b>\1</b>', $string);
-		
-		// Italics
-		$string = preg_replace('/_{1,2}([^_]+)_{1,2}/', '<i>\1</i>', $string);
-		
-		// Strikethrough
-		$string = preg_replace('/~{2}([^~]+)~{2}/', '<del>\1</del>', $string);
 		
 		return $string;
 		
@@ -933,5 +1016,3 @@ if (!class_exists('DOM')) {
 	}
 	
 }
-
-?>
