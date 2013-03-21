@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 86, 2013-03-21
+ Overseer Framework, build 87, 2013-03-21
  http://overseerframework.com/
  
  Copyright (c) 2013 Neo Geek
@@ -234,10 +234,10 @@ if (!function_exists('markdown')) {
 			
 		}
 		
-		$rules = [
+		$rules = array(
 			
 			// Headers
-			[
+			array(
 				'regex' => '/(^|\n)(#{1,6})\s*([^#\n]+)#*/',
 				'callback' => function ($matches) {
 					
@@ -248,16 +248,16 @@ if (!function_exists('markdown')) {
 					return $matches[1] . $string . $matches[1];
 					
 				}
-			],
+			),
 			
 			// Horizontal Rules
-			[
+			array(
 				'regex' => '/(^|\n)(?:\-| \-|\*){3,}/',
 				'replace' => '\1<hr>\1'
-			],
+			),
 			
 			// Ordered List
-			[
+			array(
 				'regex' => '/(^|\n)[0-9]+\.\s+(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
 					
@@ -266,10 +266,10 @@ if (!function_exists('markdown')) {
 					return $matches[1] . '<ol><li>' . implode('</li><li>', $items) . '</li></ol>' . $matches[1];
 					
 				}
-			],
+			),
 			
 			// Unordered List
-			[
+			array(
 				'regex' => '/(^|\n)[\-\*]\s+(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
 					
@@ -278,10 +278,10 @@ if (!function_exists('markdown')) {
 					return $matches[1] . '<ul><li>' . implode('</li><li>', $items) . '</li></ul>' . $matches[1];
 					
 				}
-			],
+			),
 			
 			// Blockquotes
-			[
+			array(
 				'regex' => '/(^|\n)>{1,}\s*(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
 					
@@ -290,10 +290,10 @@ if (!function_exists('markdown')) {
 					return $matches[1] . '<blockquote>' . $string . '</blockquote>' . $matches[1];
 					
 				}
-			],
+			),
 			
 			// Code Blocks
-			[
+			array(
 				'regex' => '/(^|\n)\t(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
 					
@@ -305,16 +305,16 @@ if (!function_exists('markdown')) {
 					return $matches[1] . '<pre>' . $string . '</pre>' . $matches[1];
 					
 				}
-			],
+			),
 			
 			// Paragraphs
-			[
+			array(
 				'regex' => '/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m',
 				'replace' => '\1<p>\2</p>\1'
-			],
+			),
 			
 			// Images
-			[
+			array(
 				'regex' => '/\!\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
 				'callback' => function ($matches) {
 					
@@ -329,10 +329,10 @@ if (!function_exists('markdown')) {
 					}
 					
 				}
-			],
+			),
 			
 			// Anchors
-			[
+			array(
 				'regex' => '/\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
 				'callback' => function ($matches) {
 					
@@ -347,49 +347,49 @@ if (!function_exists('markdown')) {
 					}
 					
 				}
-			],
+			),
 			
 			// Anchors/Link (Shorthand)
-			[
+			array(
 				'regex' => '/<(http(?:s)?\:\/\/[^\>]+)>/i',
 				'replace' => '<a href="\1">\1</a>'
-			],
+			),
 			
 			// Anchors/Email (Shorthand)
-			[
+			array(
 				'regex' => '/<([^>]+@.+\.[^<]+)>/',
 				'replace' => '<a href="mailto:\1">\1</a>'
-			],
+			),
 			
 			// Code
-			[
+			array(
 				'regex' => '/`([^\s].*[^\s])`/',
 				'callback' => function ($matches) {
 					
 					return '<code>' . htmlentities($matches[1]) . '</code>';
 					
 				}
-			],
+			),
 			
 			// Bold
-			[
+			array(
 				'regex' => '/(?:\*|_){2}([^\s].*?[^\s])(?:\*|_){2}/',
 				'replace' => '<strong>\1</strong>'
-			],
+			),
 			
 			// Italics
-			[
+			array(
 				'regex' => '/(?:\*|_)([^\s].*?[^\s])(?:\*|_)/',
 				'replace' => '<em>\1</em>'
-			],
+			),
 			
 			// Strikethrough
-			[
+			array(
 				'regex' => '/~{2}([^\s].*?[^\s])~{2}/',
 				'replace' => '<del>\1</del>'
-			]
+			)
 			
-		];
+		);
 		
 		foreach ($rules as $rule) {
 			
