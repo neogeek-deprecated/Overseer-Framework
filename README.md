@@ -61,6 +61,20 @@ array getcsv (string|filename $string);
 ###Examples
 
 	getcsv('data.csv');
+##markdown
+
+Basic implementation of the Markdown interpreter.
+
+###Method
+
+string markdown (string|filename $string);
+###Parameters
+
+	string|filename $string
+###Examples
+
+	markdown('#Headline');
+	markdown('file.md');
 ##mysql_fetch_results
 
 Returns the results of a MySQL query as an array, the number of rows affected, or the row ID inserted.

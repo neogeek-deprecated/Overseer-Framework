@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 87, 2013-03-21
+ Overseer Framework, build 88, 2013-04-21
  http://overseerframework.com/
  
  Copyright (c) 2013 Neo Geek
@@ -252,8 +252,8 @@ if (!function_exists('markdown')) {
 			
 			// Horizontal Rules
 			array(
-				'regex' => '/(^|\n)(?:\-| \-|\*){3,}/',
-				'replace' => '\1<hr>\1'
+				'regex' => '/(^|\n)(?:\-| \-|\*){3,}(?=\n\n|$)/',
+				'replace' => '\1<hr>\2'
 			),
 			
 			// Ordered List
@@ -262,6 +262,12 @@ if (!function_exists('markdown')) {
 				'callback' => function ($matches) {
 					
 					$items = preg_split('/\n[0-9]+\.\s+/', $matches[2], null, PREG_SPLIT_NO_EMPTY);
+					
+					foreach ($items as &$item) {
+						
+						$item = preg_replace('/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m', '\1<p>\2</p>\1', $item);
+						
+					}
 					
 					return $matches[1] . '<ol><li>' . implode('</li><li>', $items) . '</li></ol>' . $matches[1];
 					
@@ -274,6 +280,12 @@ if (!function_exists('markdown')) {
 				'callback' => function ($matches) {
 					
 					$items = preg_split('/\n[\-\*]\s+/', $matches[2], null, PREG_SPLIT_NO_EMPTY);
+					
+					foreach ($items as &$item) {
+						
+						$item = preg_replace('/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m', '\1<p>\2</p>\1', $item);
+						
+					}
 					
 					return $matches[1] . '<ul><li>' . implode('</li><li>', $items) . '</li></ul>' . $matches[1];
 					
@@ -331,6 +343,12 @@ if (!function_exists('markdown')) {
 				}
 			),
 			
+			// Anchor
+			array(
+				'regex' => '/\[([^\]]+)\]\(id:([^"\)]+)\)/i',
+				'replace' => '<span id="\2">\1</span>'
+			),
+			
 			// Anchors
 			array(
 				'regex' => '/\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
@@ -359,6 +377,20 @@ if (!function_exists('markdown')) {
 			array(
 				'regex' => '/<([^>]+@.+\.[^<]+)>/',
 				'replace' => '<a href="mailto:\1">\1</a>'
+			),
+			
+			// Code (Literal Backticks)
+			array(
+				'regex' => '/`{2}\s([^\s].*[^\s])\s`{2}/',
+				'callback' => function ($matches) {
+					
+					$string = htmlentities($matches[1]);
+					
+					$string = str_replace('`', '&#96;', $string);
+					
+					return '<code>' . $string . '</code>';
+					
+				}
 			),
 			
 			// Code
