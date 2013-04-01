@@ -4,10 +4,10 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 3, 2012-09-27
+ Overseer Framework, build 4, 2013-04-01
  http://overseerframework.com/
  
- Copyright (c) 2012 Neo Geek
+ Copyright (c) 2013 Neo Geek
  Dual-licensed under both MIT and BSD licenses.
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +34,7 @@
  * OAuth2
  * A simple PHP class for establishing OAuth 2.0 connections.
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2012, Neo Geek
+ * @copyright Copyright (c) 2013, Neo Geek
  */
 
 if (!class_exists('OAuth2')) {
@@ -45,6 +45,9 @@ if (!class_exists('OAuth2')) {
 		public $id;
 		public $secret;
 		public $callback;
+		
+		public $scope;
+		public $state;
 		
 		public $url_authorize;
 		public $url_access_token;
@@ -57,9 +60,9 @@ if (!class_exists('OAuth2')) {
 		 * @param string $secret
 		 * @param string $callback
 		 * @return object
-		 * @example $OAuth2 = new OAuth2('ID', 'SECRET', 'http://www.domain.com/callback.php');
+		 * @example $OAuth2 = new OAuth2('ID', 'SECRET', 'http://www.example.com/callback.php');
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2012, Neo Geek
+		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
 		
 		final public function __construct ($id, $secret, $callback) {
@@ -73,17 +76,16 @@ if (!class_exists('OAuth2')) {
 		/**
 		 * authenticate
 		 * Redirects the user to the specified authorize URL.
-		 * @method void OAuth2::authenticate ([string $scope]);
-		 * @param string $scope (optional)
+		 * @method void OAuth2::authenticate ();
 		 * @return void
 		 * @example $OAuth2->authenticate();
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2012, Neo Geek
+		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
 		
-		final public function authenticate ($scope = '') {
+		final public function authenticate () {
 			
-			$url = sprintf($this->url_authorize, $this->id, $this->callback, rawurlencode($scope));
+			$url = sprintf($this->url_authorize, $this->id, $this->callback, rawurlencode($this->scope), $this->state);
 			
 			header('Location: ' . $url); exit;
 			
@@ -97,12 +99,12 @@ if (!class_exists('OAuth2')) {
 		 * @return void
 		 * @example $OAuth2->callback(function ($return) { echo OAuth2::parseToken($return); });
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2012, Neo Geek
+		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
 		
 		final public function callback ($func) {
 			
-			$url = sprintf($this->url_access_token, $this->id, $this->callback, $this->secret, $_GET['code']);
+			$url = sprintf($this->url_access_token, $this->id, $this->secret, $this->callback, $_GET['code']);
 			
 			call_user_func($func, $this->request($url, true));
 			
@@ -116,7 +118,7 @@ if (!class_exists('OAuth2')) {
 		 * @return string|boolean
 		 * @example echo OAuth2::parseToken($return);
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2012, Neo Geek
+		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
 		
 		final public static function parseToken ($string) {
@@ -142,10 +144,10 @@ if (!class_exists('OAuth2')) {
 		 * @param string $url
 		 * @param boolean $post (optional)
 		 * @return string
-		 * @example echo OAuth2::request('https://api.domain.com/request');
-		 * @example echo OAuth2::request('https://api.domain.com/request?response=json', true);
+		 * @example echo OAuth2::request('https://api.example.com/request');
+		 * @example echo OAuth2::request('https://api.example.com/request?response=json', true);
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2012, Neo Geek
+		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
 		
 		final public function request ($url, $post = false) {
@@ -154,7 +156,8 @@ if (!class_exists('OAuth2')) {
 			
 			if (strtolower(parse_url($url, PHP_URL_SCHEME)) == 'https') {
 				
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 				
 			}
 			
@@ -185,19 +188,8 @@ if (!class_exists('Facebook_OAuth2')) {
 	
 	class Facebook_OAuth2 extends OAuth2 {
 		
-		public $url_authorize = 'https://graph.facebook.com/oauth/authorize?client_id=%s&redirect_uri=%s&scope=%s';
-		public $url_access_token = 'https://graph.facebook.com/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s';
-		
-	}
-	
-}
-
-if (!class_exists('GooglePlus_OAuth2')) {
-	
-	class GooglePlus_OAuth2 extends OAuth2 {
-		
-		public $url_authorize = 'https://accounts.google.com/o/oauth2/auth?client_id=%s&redirect_uri=%s&scope=%s&response_type=code';
-		public $url_access_token = 'https://accounts.google.com/o/oauth2/token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s&grant_type=authorization_code';
+		public $url_authorize = 'https://www.facebook.com/dialog/oauth?client_id=%s&redirect_uri=%s&scope=%s&state=%s';
+		public $url_access_token = 'https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&redirect_uri=%s&code=%s';
 		
 	}
 	
@@ -207,11 +199,22 @@ if (!class_exists('GitHub_OAuth2')) {
 	
 	class GitHub_OAuth2 extends OAuth2 {
 		
-		public $url_authorize = 'https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=%s';
-		public $url_access_token = 'https://github.com/login/oauth/access_token?client_id=%s&redirect_uri=%s&client_secret=%s&code=%s';
+		public $url_authorize = 'https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s&scope=%s&state=%s';
+		public $url_access_token = 'https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&redirect_uri=%s&code=%s';
 		
 	}
 	
 }
 
-?>
+if (!class_exists('GooglePlus_OAuth2')) {
+	
+	class GooglePlus_OAuth2 extends OAuth2 {
+		
+		public $scope = 'https://www.googleapis.com/auth/plus.me';
+		
+		public $url_authorize = 'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id=%s&redirect_uri=%s&scope=%s&state=%s';
+		public $url_access_token = 'https://accounts.google.com/o/oauth2/token?grant_type=authorization_code&client_id=%s&client_secret=%s&redirect_uri=%s&code=%s';
+		
+	}
+	
+}

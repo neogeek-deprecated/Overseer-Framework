@@ -4,10 +4,10 @@
 
 /* ------------------------------------------------------------
  
- Overseer Framework, build 2, 2012-09-27
+ Overseer Framework, build 2, 2013-04-01
  http://overseerframework.com/
  
- Copyright (c) 2012 Neo Geek
+ Copyright (c) 2013 Neo Geek
  Dual-licensed under both MIT and BSD licenses.
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,7 +34,7 @@
  * Router
  * Basic PHP router class.
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2012, Neo Geek
+ * @copyright Copyright (c) 2013, Neo Geek
  */
 
 if (!class_exists('Router')) {
@@ -52,8 +52,8 @@ if (!class_exists('Router')) {
 			
 			$path = trim($path, '/');
 			
-			$path = preg_replace('/\{int(eger)?\}/', '([0-9]+)', $path);
-			$path = preg_replace('/\{str(ing)?\}/', '([0-9a-z]+)', $path);
+			$path = preg_replace('/:int(eger)?/', '([0-9]+)', $path);
+			$path = preg_replace('/:str(ing)?/', '([0-9a-z]+)', $path);
 			
 			$path = str_replace('/', '\/', $path);
 			
@@ -112,5 +112,3 @@ if (!class_exists('Router')) {
 	}
 	
 }
-
-?>
