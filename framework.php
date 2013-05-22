@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
 
- Overseer Framework, build 89, 2013-05-21
+ Overseer Framework, build 90, 2013-05-22
  http://overseerframework.com/
 
  Copyright (c) 2013 Neo Geek
@@ -321,7 +321,7 @@ if (!function_exists('markdown')) {
 
 			// Paragraphs
 			array(
-				'regex' => '/(^|\n)([^<\n]?.+[^>\n]?)(?=\n\n|$)/m',
+				'regex' => '/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m',
 				'replace' => '\1<p>\2</p>\1'
 			),
 
