@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
 
- Overseer Framework, build 88, 2013-04-21
+ Overseer Framework, build 89, 2013-05-21
  http://overseerframework.com/
 
  Copyright (c) 2013 Neo Geek
@@ -265,7 +265,7 @@ if (!function_exists('markdown')) {
 
 					foreach ($items as &$item) {
 
-						$item = preg_replace('/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m', '\1<p>\2</p>\1', $item);
+						$item = preg_replace('/\n\s*/', '<br>', $item);
 
 					}
 
@@ -283,7 +283,7 @@ if (!function_exists('markdown')) {
 
 					foreach ($items as &$item) {
 
-						$item = preg_replace('/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m', '\1<p>\2</p>\1', $item);
+						$item = preg_replace('/\n\s*/', '<br>', $item);
 
 					}
 
@@ -321,7 +321,7 @@ if (!function_exists('markdown')) {
 
 			// Paragraphs
 			array(
-				'regex' => '/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m',
+				'regex' => '/(^|\n)([^<\n]?.+[^>\n]?)(?=\n\n|$)/m',
 				'replace' => '\1<p>\2</p>\1'
 			),
 
@@ -381,7 +381,7 @@ if (!function_exists('markdown')) {
 
 			// Code (Literal Backticks)
 			array(
-				'regex' => '/`{2}\s([^\s].*[^\s])\s`{2}/',
+				'regex' => '/`{2}([^\s]?.*?[^\s]?)`{2}/',
 				'callback' => function ($matches) {
 
 					$string = htmlentities($matches[1]);
@@ -395,7 +395,7 @@ if (!function_exists('markdown')) {
 
 			// Code
 			array(
-				'regex' => '/`([^\s].*[^\s])`/',
+				'regex' => '/`([^\s]?.*?[^\s]?)`/',
 				'callback' => function ($matches) {
 
 					return '<code>' . htmlentities($matches[1]) . '</code>';
@@ -405,19 +405,19 @@ if (!function_exists('markdown')) {
 
 			// Bold
 			array(
-				'regex' => '/(?:\*|_){2}([^\s].*?[^\s])(?:\*|_){2}/',
+				'regex' => '/(?:\*|_){2}([^\s]?.*?[^\s]?)(?:\*|_){2}/',
 				'replace' => '<strong>\1</strong>'
 			),
 
 			// Italics
 			array(
-				'regex' => '/(?:\*|_)([^\s].*?[^\s])(?:\*|_)/',
+				'regex' => '/(?:\*|_)([^\s]?.*?[^\s]?)(?:\*|_)/',
 				'replace' => '<em>\1</em>'
 			),
 
 			// Strikethrough
 			array(
-				'regex' => '/~{2}([^\s].*?[^\s])~{2}/',
+				'regex' => '/~{2}([^\s]?.*?[^\s]?)~{2}/',
 				'replace' => '<del>\1</del>'
 			)
 
