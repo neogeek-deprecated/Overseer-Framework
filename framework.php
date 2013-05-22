@@ -3,23 +3,23 @@
 # namespace NeoGeek\OverseerFramework;
 
 /* ------------------------------------------------------------
- 
+
  Overseer Framework, build 88, 2013-04-21
  http://overseerframework.com/
- 
+
  Copyright (c) 2013 Neo Geek
  Dual-licensed under both MIT and BSD licenses.
- 
+
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights
  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  copies of the Software, and to permit persons to whom the Software is
  furnished to do so, subject to the following conditions:
- 
+
  The above copyright notice and this permission notice shall be included in
  all copies or substantial portions of the Software.
- 
+
  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,7 +27,7 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
- 
+
 ------------------------------------------------------------ */
 
 
@@ -46,21 +46,21 @@
 if (!function_exists('check_referer')) {
 
 	function check_referer ($url = '') {
-		
+
 		if (!$url) {
-			
+
 			$url = $_SERVER['REQUEST_URI'];
-			
+
 		}
-		
+
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			
+
 			return strpos($_SERVER['HTTP_REFERER'], $url) !== false;
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
 
 }
@@ -80,45 +80,45 @@ if (!function_exists('check_referer')) {
  */
 
 if (!function_exists('fetch_remote_file')) {
-	
+
 	function fetch_remote_file ($url, $cache = '', $expire = -1) {
-		
+
 		if (!is_numeric($expire)) {
-			
+
 			$expire = strtotime($expire);
-			
+
 		}
-		
+
 		if (!file_exists($cache) || !$expire || filemtime($cache) < $expire) {
-			
+
 			$ch = curl_init($url);
-			
+
 			if (strtolower(parse_url($url, PHP_URL_SCHEME)) == 'https') {
-				
+
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-				
+
 			}
-			
+
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			
+
 			$output = curl_exec($ch);
-			
+
 			curl_close($ch);
-			
+
 			if ($cache) {
-				
+
 				file_put_contents($cache, $output);
-				
+
 			}
-			
+
 		} else {
-			
+
 			$output = file_get_contents($cache);
-			
+
 		}
-		
+
 		return $output;
-		
+
 	}
 
 }
@@ -136,15 +136,15 @@ if (!function_exists('fetch_remote_file')) {
  */
 
 if (!function_exists('getbrowser')) {
-	
+
 	function getbrowser ($http_user_agent = null) {
-	
+
 		if ($http_user_agent == null) {
-			
+
 			$http_user_agent = $_SERVER['HTTP_USER_AGENT'];
-			
+
 		}
-		
+
 		$browsers = array(
 			'Opera' => '/Opera(?:[\/ ]([0-9.]+))?(?:.*Version[\/ ]([0-9.]+))?/i',
 			'Google Chrome' => '/Chrome\/([0-9.]+)?/i',
@@ -152,35 +152,35 @@ if (!function_exists('getbrowser')) {
 			'Firefox' => '/Firefox(?:[\/\( ]?([0-9.]+))?/i',
 			'Internet Explorer' => '/MSIE(?:[\/ ]([0-9.]+))?/i'
 		);
-		
+
 		foreach ($browsers as $browser => $regex) {
-			
+
 			if (preg_match($regex, $http_user_agent, $matches)) {
-				
+
 				if (isset($matches[2])) {
-					
+
 					$version = $matches[2];
-					
+
 				} else if (isset($matches[1])) {
-					
+
 					$version = $matches[1];
-					
+
 				} else {
-					
+
 					$version = null;
-					
+
 				}
-				
+
 				return array($browser, $version);
-				
+
 			}
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-	
+
 }
 
 /**
@@ -195,21 +195,21 @@ if (!function_exists('getbrowser')) {
  */
 
 if (!function_exists('getcsv')) {
-	
+
 	function getcsv ($string) {
-		
+
 		if (is_file($string)) {
-			
+
 			$string = file_get_contents($string);
-			
+
 		}
-		
+
 		$lines = preg_split('/\n|\r/', $string, null, PREG_SPLIT_NO_EMPTY);
-		
+
 		return array_map('str_getcsv', $lines);
-		
+
 	}
-	
+
 }
 
 /**
@@ -225,222 +225,222 @@ if (!function_exists('getcsv')) {
  */
 
 if (!function_exists('markdown')) {
-	
+
 	function markdown ($string) {
-		
+
 		if (is_file($string)) {
-			
+
 			$string = file_get_contents($string);
-			
+
 		}
-		
+
 		$rules = array(
-			
+
 			// Headers
 			array(
 				'regex' => '/(^|\n)(#{1,6})\s*([^#\n]+)#*/',
 				'callback' => function ($matches) {
-					
+
 					$count = strlen($matches[2]);
-					
+
 					$string = sprintf('<h%d>%s</h%d>', $count, $matches[3], $count);
-					
+
 					return $matches[1] . $string . $matches[1];
-					
+
 				}
 			),
-			
+
 			// Horizontal Rules
 			array(
 				'regex' => '/(^|\n)(?:\-| \-|\*){3,}(?=\n\n|$)/',
 				'replace' => '\1<hr>\2'
 			),
-			
+
 			// Ordered List
 			array(
 				'regex' => '/(^|\n)[0-9]+\.\s+(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
-					
+
 					$items = preg_split('/\n[0-9]+\.\s+/', $matches[2], null, PREG_SPLIT_NO_EMPTY);
-					
+
 					foreach ($items as &$item) {
-						
+
 						$item = preg_replace('/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m', '\1<p>\2</p>\1', $item);
-						
+
 					}
-					
+
 					return $matches[1] . '<ol><li>' . implode('</li><li>', $items) . '</li></ol>' . $matches[1];
-					
+
 				}
 			),
-			
+
 			// Unordered List
 			array(
 				'regex' => '/(^|\n)[\-\*]\s+(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
-					
+
 					$items = preg_split('/\n[\-\*]\s+/', $matches[2], null, PREG_SPLIT_NO_EMPTY);
-					
+
 					foreach ($items as &$item) {
-						
+
 						$item = preg_replace('/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m', '\1<p>\2</p>\1', $item);
-						
+
 					}
-					
+
 					return $matches[1] . '<ul><li>' . implode('</li><li>', $items) . '</li></ul>' . $matches[1];
-					
+
 				}
 			),
-			
+
 			// Blockquotes
 			array(
 				'regex' => '/(^|\n)>{1,}\s*(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
-					
+
 					$string = preg_replace('/\n>{1,}\s*/', ' ', $matches[2]);
-					
+
 					return $matches[1] . '<blockquote>' . $string . '</blockquote>' . $matches[1];
-					
+
 				}
 			),
-			
+
 			// Code Blocks
 			array(
 				'regex' => '/(^|\n)\t(.+?)(?=\n\n|$)/s',
 				'callback' => function ($matches) {
-					
+
 					$string = htmlentities($matches[2]);
-					
+
 					$string = preg_replace('/(\n)\t/', '\1', $string);
 					$string = preg_replace('/\n/', '&#010;', $string);
-					
+
 					return $matches[1] . '<pre>' . $string . '</pre>' . $matches[1];
-					
+
 				}
 			),
-			
+
 			// Paragraphs
 			array(
 				'regex' => '/(^|\n)([^<\n].+[^>\n])(?=\n\n|$)/m',
 				'replace' => '\1<p>\2</p>\1'
 			),
-			
+
 			// Images
 			array(
 				'regex' => '/\!\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
 				'callback' => function ($matches) {
-					
+
 					if (isset($matches[3])) {
-						
+
 						return sprintf('<img src="%s" alt="%s" title="%s">', $matches[2], $matches[1], $matches[3]);
-						
+
 					} else {
-						
+
 						return sprintf('<img src="%s" alt="%s">', $matches[2], $matches[1]);
-						
+
 					}
-					
+
 				}
 			),
-			
+
 			// Anchor
 			array(
 				'regex' => '/\[([^\]]+)\]\(id:([^"\)]+)\)/i',
 				'replace' => '<span id="\2">\1</span>'
 			),
-			
+
 			// Anchors
 			array(
 				'regex' => '/\[([^\]]+)\]\(([^"\)]+)(?:\s+"(.+)")?\)/',
 				'callback' => function ($matches) {
-					
+
 					if (isset($matches[3])) {
-						
+
 						return sprintf('<a href="%s" title="%s">%s</a>', $matches[2], $matches[3], $matches[1]);
-						
+
 					} else {
-						
+
 						return sprintf('<a href="%s">%s</a>', $matches[2], $matches[1]);
-						
+
 					}
-					
+
 				}
 			),
-			
+
 			// Anchors/Link (Shorthand)
 			array(
 				'regex' => '/<(http(?:s)?\:\/\/[^\>]+)>/i',
 				'replace' => '<a href="\1">\1</a>'
 			),
-			
+
 			// Anchors/Email (Shorthand)
 			array(
 				'regex' => '/<([^>]+@.+\.[^<]+)>/',
 				'replace' => '<a href="mailto:\1">\1</a>'
 			),
-			
+
 			// Code (Literal Backticks)
 			array(
 				'regex' => '/`{2}\s([^\s].*[^\s])\s`{2}/',
 				'callback' => function ($matches) {
-					
+
 					$string = htmlentities($matches[1]);
-					
+
 					$string = str_replace('`', '&#96;', $string);
-					
+
 					return '<code>' . $string . '</code>';
-					
+
 				}
 			),
-			
+
 			// Code
 			array(
 				'regex' => '/`([^\s].*[^\s])`/',
 				'callback' => function ($matches) {
-					
+
 					return '<code>' . htmlentities($matches[1]) . '</code>';
-					
+
 				}
 			),
-			
+
 			// Bold
 			array(
 				'regex' => '/(?:\*|_){2}([^\s].*?[^\s])(?:\*|_){2}/',
 				'replace' => '<strong>\1</strong>'
 			),
-			
+
 			// Italics
 			array(
 				'regex' => '/(?:\*|_)([^\s].*?[^\s])(?:\*|_)/',
 				'replace' => '<em>\1</em>'
 			),
-			
+
 			// Strikethrough
 			array(
 				'regex' => '/~{2}([^\s].*?[^\s])~{2}/',
 				'replace' => '<del>\1</del>'
 			)
-			
+
 		);
-		
+
 		foreach ($rules as $rule) {
-			
+
 			if (isset($rule['regex'], $rule['replace'])) {
-				
+
 				$string = preg_replace($rule['regex'], $rule['replace'], $string);
-				
+
 			} else if (isset($rule['regex'], $rule['callback'])) {
-				
+
 				$string = preg_replace_callback($rule['regex'], $rule['callback'], $string);
-				
+
 			}
-			
+
 		}
-		
+
 		return $string;
-		
+
 	}
-	
+
 }
 
 /**
@@ -458,43 +458,43 @@ if (!function_exists('markdown')) {
  */
 
 if (!function_exists('mysql_fetch_results')) {
-	
+
 	function mysql_fetch_results ($query, $results = array()) {
-		
+
 		if (is_resource($query)) {
-			
+
 			$result = $query;
-			
+
 		} else {
-			
+
 			$result = mysql_query($query);
-			
+
 		}
-		
+
 		if (is_resource($result)) {
-			
+
 			while ($row = mysql_fetch_assoc($result)) {
-				
+
 				array_push($results, $row);
-				
+
 			}
-			
+
 		} else {
-			
+
 			$results = mysql_insert_id();
-			
+
 			if (!$results) {
-				
+
 				$results = mysql_affected_rows();
-				
+
 			}
-			
+
 		}
-		
+
 		return $results;
-		
+
 	}
-	
+
 }
 
 /**
@@ -513,51 +513,51 @@ if (!function_exists('mysql_fetch_results')) {
  */
 
 if (!function_exists('mysqli_fetch_results')) {
-	
+
 	function mysqli_fetch_results ($resource, $query, $results = array()) {
-		
+
 		if (is_object($query)) {
-			
+
 			$result = $query;
-			
+
 		} else {
-			
+
 			$result = $resource->query($query);
-			
+
 		}
-		
+
 		if (is_object($result)) {
-			
+
 			while ($row = $result->fetch_assoc()) {
-				
+
 				array_push($results, $row);
-				
+
 			}
-			
+
 			$result->free();
-			
+
 		} else {
-			
+
 			$results = mysqli_insert_id($resource);
-			
+
 			if (!$results) {
-				
+
 				$results = mysqli_affected_rows($resource);
-				
+
 			}
-			
+
 		}
-		
+
 		while ($resource->more_results()) {
-			
+
 			$resource->next_result();
-			
+
 		}
-		
+
 		return $results;
-		
+
 	}
-	
+
 }
 
 /**
@@ -579,91 +579,91 @@ if (!function_exists('mysqli_fetch_results')) {
  */
 
 if (!function_exists('mysqli_transaction')) {
-	
+
 	function mysqli_transaction ($resource, $query) {
-		
+
 		$result = $resource->prepare($query);
-		
+
 		if (!$result) {
-			
+
 			return false;
-			
+
 		}
-		
+
 		if (func_num_args() > 3) {
-			
+
 			$values = array_slice(func_get_args(), 2);
-			
+
 			foreach ($values as $key => $value) {
-				
+
 				$values[$key] = &$values[$key];
-				
+
 			}
-			
+
 			call_user_func_array(array($result, 'bind_param'), $values);
-			
+
 		}
-		
+
 		$result->execute();
-		
+
 		$meta = $result->result_metadata();
-		
+
 		if ($meta) {
-			
+
 			$fields = $meta->fetch_fields();
-			
+
 			foreach ($fields as $key => $value) {
-				
+
 				$fields[$value->name] = &$fields[$value->name];
-				
+
 				unset($fields[$key]);
-				
+
 			}
-			
+
 			call_user_func_array(array($result, 'bind_result'), $fields);
-			
+
 			$results = array();
-			
+
 			while ($result->fetch()) {
-				
+
 				$row = array();
-			
+
 				foreach ($fields as $key => $value) {
-					
+
 					$row[$key] = $value;
-					
+
 				}
-				
+
 				array_push($results, $row);
-				
+
 			}
-			
+
 		} else {
-			
+
 			$results = $result->insert_id;
-			
+
 			if (!$results) {
-				
+
 				$results = $result->affected_rows;
-				
+
 			}
-			
+
 		}
-		
+
 		$result->free_result();
-		
+
 		$result->close();
-		
+
 		while ($resource->more_results()) {
-			
+
 			$resource->next_result();
-			
+
 		}
-		
+
 		return $results;
-		
+
 	}
-	
+
 }
 
 /**
@@ -680,27 +680,27 @@ if (!function_exists('mysqli_transaction')) {
  */
 
 if (!function_exists('path_info')) {
-	
+
 	function path_info ($offset = 0, $path = null) {
-		
+
 		if (!$path) {
-			
+
 			$path = $_SERVER['PATH_INFO'];
-			
+
 		}
-		
+
 		$matches = preg_split('/\//', $path, null, PREG_SPLIT_NO_EMPTY);
-		
+
 		if (isset($matches[$offset])) {
-			
+
 			return $matches[$offset];
-			
+
 		}
-		
+
 		return false;
-		
+
 	}
-	
+
 }
 
 /**
@@ -717,19 +717,19 @@ if (!function_exists('path_info')) {
  */
 
 if (!function_exists('print_array')) {
-	
+
 	function print_array () {
-		
+
 		$arrays = func_get_args();
-		
+
 		foreach ($arrays as $array) {
-			
+
 			echo '<pre>' . print_r($array, true) . '</pre>';
-			
+
 		}
-		
+
 	}
-	
+
 }
 
 /**
@@ -745,27 +745,27 @@ if (!function_exists('print_array')) {
  */
 
 if (!function_exists('runtime')) {
-	
+
 	function runtime ($precision = 0) {
-		
+
 		static $time;
-		
+
 		if ($time) {
-			
+
 			$output = round((microtime(true) - (float)$time) * 10000, $precision);
-			
+
 		} else {
-			
+
 			$output = 0;
-			
+
 		}
-		
+
 		$time = microtime(true);
-		
+
 		return $output;
-		
+
 	}
-	
+
 }
 
 /**
@@ -782,19 +782,19 @@ if (!function_exists('runtime')) {
  */
 
 if (!function_exists('sha')) {
-	
+
 	function sha ($content, $type = 'sha256') {
-		
+
 		if (is_file($content)) {
-			
+
 			$content = file_get_contents($content);
-			
+
 		}
-		
+
 		return hash($type, $content);
-		
+
 	}
-	
+
 }
 
 /**
@@ -805,10 +805,10 @@ if (!function_exists('sha')) {
  */
 
 if (!class_exists('DOM')) {
-	
+
 	class DOM extends \DOMDocument
 	{
-		
+
 		/**
 		 * create
 		 * Creates an HTML DOM element with content and attributes utilizing only one function call.
@@ -821,37 +821,37 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function create ($tag, $content = null, $attribs = array()) {
-			
+
 			$element = $this->createElement($tag);
-			
+
 			if (is_object($content)) {
-				
+
 				$element->appendChild($content);
-				
+
 			} else {
-				
+
 				$element->appendChild($this->createTextNode((string)$content));
-				
+
 			}
-			
+
 			foreach ($attribs as $key => $value) {
-				
+
 				if (!is_string($key)) {
-					
+
 					$key = (string)$value;
-					
+
 				}
-				
+
 				$element->setAttribute($key, $value);
-				
+
 			}
-			
+
 			return $element;
-			
+
 		}
-		
+
 		/**
 		 * getElementById
 		 * Extends the default getElementById function to allow for access to imported elements.
@@ -862,35 +862,35 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function getElementById ($id) {
-			
+
 			$element = parent::getElementById($id);
-			
+
 			if (!$element) {
-				
+
 				$elements = $this->getElementsByTagName('*');
-				
+
 				foreach ($elements as $element) {
-					
+
 					if ($element->getAttribute('id') == $id) {
-						
+
 						return $element;
-						
+
 					}
-					
+
 				}
-				
+
 			} else {
-				
+
 				return $element;
-				
+
 			}
-			
+
 			return false;
-			
+
 		}
-		
+
 		/**
 		 * import
 		 * Imports an external HTML source as a document fragment. (Notice: Must be valid HTML)
@@ -901,23 +901,23 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function import ($string) {
-			
+
 			$element = $this->createDocumentFragment();
-			
+
 			if (is_file($string)) {
-				
+
 				$string = file_get_contents($string);
-				
+
 			}
-			
+
 			$element->appendXML($string);
-			
+
 			return $element;
-			
+
 		}
-		
+
 		/**
 		 * nextSiblings
 		 * Returns the next sibling based on an integer.
@@ -929,33 +929,33 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function nextSiblings ($object, $num = 1) {
-			
+
 			while ($num) {
-				
+
 				$object = $object->nextSibling;
-				
+
 				if ($object) {
-					
+
 					if ($object->nodeType == XML_ELEMENT_NODE) {
-						
+
 						$num--;
-						
+
 					}
-					
+
 				} else {
-					
+
 					return false;
-					
+
 				}
-				
+
 			}
-			
+
 			return $object;
-			
+
 		}
-		
+
 		/**
 		 * prepend
 		 * Prepends an object before the specified node.
@@ -967,13 +967,13 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function prepend ($object, $node) {
-			
+
 			return $node->parentNode->insertBefore($object, $node);
-			
+
 		}
-		
+
 		/**
 		 * query
 		 * Queries the DOM using XPath.
@@ -984,15 +984,15 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function query ($query) {
-			
+
 			$xpath = new DOMXPath($this);
-			
+
 			return $xpath->query($query);
-			
+
 		}
-		
+
 		/**
 		 * remove
 		 * Removes one or more HTML DOM elements.
@@ -1004,29 +1004,29 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function remove ($object) {
-			
+
 			if (isset($object->length)) {
-				
+
 				while ($object->length) {
-					
+
 					$this->remove($object->item($object->length -1));
-					
+
 				}
-				
+
 				return true;
-				
+
 			} else if (is_object($object)) {
-				
+
 				return $object->parentNode->removeChild($object);
-				
+
 			}
-			
+
 			return false;
-			
+
 		}
-		
+
 		/**
 		 * replace
 		 * Replaces the specified node with another object.
@@ -1038,13 +1038,13 @@ if (!class_exists('DOM')) {
 		 * @author Neo Geek <neo@neo-geek.net>
 		 * @copyright Copyright (c) 2013, Neo Geek
 		 */
-		
+
 		final public function replace ($object, $node) {
-			
+
 			return $node->parentNode->replaceChild($object, $node);
-			
+
 		}
-		
+
 	}
-	
+
 }
