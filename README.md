@@ -1,304 +1,477 @@
 #The Overseer Framework
 
-A collection of simple functions and classes, the Overseer Framework is a useful addition to any PHP project. From functions for quickly retrieving data from MySQL queries to basic DOM manipulation, the Overseer Framework is packed with functions you never knew you needed.
+>A collection of simple functions and classes, the Overseer Framework is a useful addition to any PHP project. From functions for quickly retrieving data from MySQL queries to basic DOM manipulation, the Overseer Framework is packed with functions you never knew you needed.
 
-#Functions
+##Functions
 
-##check_referer
+###check_referer()
 
 Checks the HTTP_REFERER server variable against the current or specified page.
 
-###Method
+####Method
 
+```php
 boolean check_referer ([string $url]);
-###Parameters
+```
 
-	string $url (optional)
-###Examples
+####Parameters
 
-	check_referer();
-	check_referer('/contact/');
-##fetch_remote_file
+```php
+string $url (optional)
+```
+
+####Examples
+
+```php
+check_referer();
+check_referer('/contact/');
+```
+
+###fetch_remote_file()
 
 Fetches an external file using the built-in PHP library CURL. Also allows for specifying a cached version and expiration time.
 
-###Method
+####Method
 
+```php
 string fetch_remote_file (string $url [, filename $cache, string|integer $expire]);
-###Parameters
+```
 
-	string $url
-	filename $cache (optional)
-	string|integer $expire (optional)
-###Examples
+####Parameters
 
-	fetch_remote_file('http://www.example.com/file.xml');
-	fetch_remote_file('http://www.example.com/file.xml', 'cache/file.xml', '1 hour ago');
-##getbrowser
+```php
+string $url
+filename $cache (optional)
+string|integer $expire (optional)
+```
+
+####Examples
+
+```php
+fetch_remote_file('http://www.example.com/file.xml');
+fetch_remote_file('http://www.example.com/file.xml', 'cache/file.xml', '1 hour ago');
+```
+
+###getbrowser()
 
 Basic alternative to the built in PHP get_browser function. Supports Opera, Google Chrome, Safari, Firefox and Internet Explorer.
 
-###Method
+####Method
 
+```php
 array|boolean getbrowser ([string $http_user_agent]);
-###Parameters
+```
 
-	string $http_user_agent (optional)
-###Examples
+####Parameters
 
-	getbrowser();
-	getbrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8) AppleWebKit/536.25 (KHTML, like Gecko) Version/6.0 Safari/536.25')
-##getcsv
+```php
+string $http_user_agent (optional)
+```
+
+####Examples
+
+```php
+getbrowser();
+getbrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1')
+```
+
+###getcsv()
 
 Returns CSV file or string as a multidimensional array.
 
-###Method
+####Method
 
+```php
 array getcsv (string|filename $string);
-###Parameters
+```
 
-	string|filename $string
-###Examples
+####Parameters
 
-	getcsv('data.csv');
-##markdown
+```php
+string|filename $string
+```
+
+####Examples
+
+```php
+getcsv('data.csv');
+```
+
+###markdown()
 
 Basic implementation of the Markdown interpreter.
 
-###Method
+####Method
 
+```php
 string markdown (string|filename $string);
-###Parameters
+```
 
-	string|filename $string
-###Examples
+####Parameters
 
-	markdown('#Headline');
-	markdown('file.md');
-##mysql_fetch_results
+```php
+string|filename $string
+```
+
+####Examples
+
+```php
+markdown('#Headline');
+markdown('file.md');
+```
+
+###mysql_fetch_results()
 
 Returns the results of a MySQL query as an array, the number of rows affected, or the row ID inserted.
 
-###Method
+####Method
 
+```php
 array|integer mysql_fetch_results (string|resource $query [, array $results]);
-###Parameters
+```
 
-	string|resource $query
-	array $results (optional)
-###Examples
+####Parameters
 
-	mysql_fetch_results('INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
-	mysql_fetch_results('SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
-	mysql_fetch_results('UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
-##mysqli_fetch_results
+```php
+string|resource $query
+array $results (optional)
+```
+
+####Examples
+
+```php
+mysql_fetch_results('INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
+mysql_fetch_results('SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
+mysql_fetch_results('UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
+```
+
+###mysqli_fetch_results()
 
 Returns the results of a MySQLi query as an array, the number of rows affected, or the row ID inserted.
 
-###Method
+####Method
 
+```php
 array|integer mysqli_fetch_results (resource $resource, string|resource $query [, array $results]);
-###Parameters
+```
 
-	resource $resource
-	string|resource $query
-	array $results (optional)
-###Examples
+####Parameters
 
-	mysqli_fetch_results($mysqli, 'INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
-	mysqli_fetch_results($mysqli, 'SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
-	mysqli_fetch_results($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
-##mysqli_transaction
+```php
+resource $resource
+string|resource $query
+array $results (optional)
+```
+
+####Examples
+
+```php
+mysqli_fetch_results($mysqli, 'INSERT INTO `user` SET `username` = "username", `password` = SHA("password")');
+mysqli_fetch_results($mysqli, 'SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
+mysqli_fetch_results($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
+```
+
+###mysqli_transaction()
 
 Prepares and executes a MYSQLi statement. Returns the results of the MySQLi query as an array, the number of rows affected, or the row ID inserted.
 
-###Method
+####Method
 
+```php
 array|integer mysqli_transaction (resource $resource, string $query [, string $types, string $var1, ..., string $var10]);
-###Parameters
+```
 
-	resource $resource
-	string $query
-	string $types (optional)
-	string $var1 (optional)
-	string $var# (optional)
-	string $var10 (optional)
-###Examples
+####Parameters
 
-	mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = SHA(?)', 'ss', 'username', 'password');
-	mysqli_transaction($mysqli, 'SELECT * FROM `user` WHERE `user_id` = ? LIMIT 1', 'i', 1);
-	mysqli_transaction($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = ? LIMIT 1', 'i', 1);
-##path_info
+```php
+resource $resource
+string $query
+string $types (optional)
+string $var1 (optional)
+string $var# (optional)
+string $var10 (optional)
+```
+
+####Examples
+
+```php
+mysqli_transaction($mysqli, 'INSERT INTO `user` SET `username` = ?, `password` = SHA(?)', 'ss', 'username', 'password');
+mysqli_transaction($mysqli, 'SELECT * FROM `user` WHERE `user_id` = ? LIMIT 1', 'i', 1);
+mysqli_transaction($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = ? LIMIT 1', 'i', 1);
+```
+
+###path_info()
 
 Returns virtual path names based on offset.
 
-###Method
+####Method
 
+```php
 string|boolean path_info ([integer $offset, string $path]);
-###Parameters
+```
 
-	integer $offset (optional)
-	string $path (optional)
-###Examples
+####Parameters
 
-	echo path_info(1);
-	echo path_info(1, 'user/neogeek');
-##print_array
+```php
+integer $offset (optional)
+string $path (optional)
+```
+
+####Examples
+
+```php
+echo path_info(1);
+echo path_info(1, 'user/neogeek');
+```
+
+###print_array()
 
 Prints any number of arrays (or strings) to the output buffer surrounded by pre tags.
 
-###Method
+####Method
 
+```php
 void print_array ([array $array1, ..., array $array10]);
-###Parameters
+```
 
-	string $array1 (optional)
-	string $array# (optional)
-	string $array10 (optional)
-###Examples
+####Parameters
 
-	print_array($results, $_POST);
-##runtime
+```php
+string $array1 (optional)
+string $array# (optional)
+string $array10 (optional)
+```
+
+####Examples
+
+```php
+print_array($results, $_POST);
+```
+
+###runtime()
 
 Returns the number of milliseconds past between function calls.
 
-###Method
+####Method
 
+```php
 integer runtime ([int $precision]);
-###Parameters
+```
 
-	integer $precision (optional)
-###Examples
+####Parameters
 
-	echo 'This script took ' . runtime(2) . ' millisecond(s) to run.';
-##sha
+```php
+integer $precision (optional)
+```
+
+####Examples
+
+```php
+echo 'This script took ' . runtime(2) . ' millisecond(s) to run.';
+```
+
+###sha()
 
 Returns a string or file encoded as sha256.
 
-###Method
+####Method
 
+```php
 string sha (string|filename $content [, string $type]);
-###Parameters
+```
 
-	string|filename $content
-	string $type (optional)
-###Examples
+####Parameters
 
-	echo sha('encode');
-	echo sha('encode.txt', 'sha1');
-Classes
+```php
+string|filename $content
+string $type (optional)
+```
 
-##DOM
+####Examples
 
-Extends the built in PHP DOMDocument class.
+```php
+echo sha('encode');
+echo sha('encode.txt', 'sha1');
+```
 
-##$DOM->create
+<h2>##Classes</h2><h3>###DOM</h3><p>Extends the built in PHP DOMDocument class.</p>###$DOM->create()
 
 Creates an HTML DOM element with content and attributes utilizing only one function call.
 
-###Method
+####Method
 
+```php
 object DOM::create (string $tag [, string|object $content, array $attribs]);
-###Parameters
+```
 
-	string $tag
-	string|object $content (optional)
-	array $attribs (optional)
-###Examples
+####Parameters
 
-	$DOM->create('p', 'Lorem ipsum dolor sit amet.', array('class'=>'demo'));
-##$DOM->getElementById
+```php
+string $tag
+string|object $content (optional)
+array $attribs (optional)
+```
+
+####Examples
+
+```php
+$DOM->create('p', 'Lorem ipsum dolor sit amet.', array('class'=>'demo'));
+```
+
+###$DOM->getElementById()
 
 Extends the default getElementById function to allow for access to imported elements.
 
-###Method
+####Method
 
+```php
 object|boolean DOM::getElementById (string $id);
-###Parameters
+```
 
-	string $id
-###Examples
+####Parameters
 
-	$DOM->getElementById('test'));
-##$DOM->import
+```php
+string $id
+```
+
+####Examples
+
+```php
+$DOM->getElementById('test'));
+```
+
+###$DOM->import()
 
 Imports an external HTML source as a document fragment. (Notice: Must be valid HTML)
 
-###Method
+####Method
 
+```php
 object DOM::import (string|filename $string);
-###Parameters
+```
 
-	string|filename $string
-###Examples
+####Parameters
 
-	$DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
-##$DOM->nextSiblings
+```php
+string|filename $string
+```
+
+####Examples
+
+```php
+$DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
+```
+
+###$DOM->nextSiblings()
 
 Returns the next sibling based on an integer.
 
-###Method
+####Method
 
+```php
 object|boolean DOM::nextSiblings (object $object [, integer $num]);
-###Parameters
+```
 
-	object $object
-	integer $num (optional)
-###Examples
+####Parameters
 
-	$DOM->nextSiblings($object, 5);
-##$DOM->prepend
+```php
+object $object
+integer $num (optional)
+```
+
+####Examples
+
+```php
+$DOM->nextSiblings($object, 5);
+```
+
+###$DOM->prepend()
 
 Prepends an object before the specified node.
 
-###Method
+####Method
 
+```php
 object DOM::prepend (object $object, object $node);
-###Parameters
+```
 
-	object $object
-	object $node
-###Examples
+####Parameters
 
-	$DOM->prepend($DOM->create('div', 'test'), $node);
-##$DOM->query
+```php
+object $object
+object $node
+```
+
+####Examples
+
+```php
+$DOM->prepend($DOM->create('div', 'test'), $node);
+```
+
+###$DOM->query()
 
 Queries the DOM using XPath.
 
-###Method
+####Method
 
+```php
 object DOM::query (string $query);
-###Parameters
+```
 
-	string $query
-###Examples
+####Parameters
 
-	$DOM->query('//div');
-##$DOM->remove
+```php
+string $query
+```
+
+####Examples
+
+```php
+$DOM->query('//div');
+```
+
+###$DOM->remove()
 
 Removes one or more HTML DOM elements.
 
-###Method
+####Method
 
+```php
 object|boolean DOM::remove (object $object);
-###Parameters
+```
 
-	object $object
-###Examples
+####Parameters
 
-	$DOM->remove($DOM->getElementById('demo'));
-	$DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
-##$DOM->replace
+```php
+object $object
+```
+
+####Examples
+
+```php
+$DOM->remove($DOM->getElementById('demo'));
+$DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
+```
+
+###$DOM->replace()
 
 Replaces the specified node with another object.
 
-###Method
+####Method
 
+```php
 object DOM::replace (object $object, object $node);
-###Parameters
+```
 
-	object $object
-	object $node
-###Examples
+####Parameters
 
-	$DOM->replace($DOM->create('select'), $DOM->getElementById('dropdown'));
+```php
+object $object
+object $node
+```
+
+####Examples
+
+```php
+$DOM->replace($DOM->create('select'), $DOM->getElementById('dropdown'));
+```
