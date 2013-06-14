@@ -362,6 +362,28 @@ string|filename $string
 $DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
 ```
 
+###$DOM->innerHTML()
+
+Returns the inner HTML of the specified node.
+
+####Method
+
+```php
+string DOM::innerHTML (object $object);
+```
+
+####Parameters
+
+```php
+object $object
+```
+
+####Examples
+
+```php
+echo $DOM->innerHTML($node);
+```
+
 ###$DOM->nextSiblings()
 
 Returns the next sibling based on an integer.

@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
 
- Overseer Framework, build 90, 2013-05-22
+ Overseer Framework, build 91, 2013-06-13
  http://overseerframework.com/
 
  Copyright (c) 2013 Neo Geek
@@ -101,23 +101,23 @@ if (!function_exists('fetch_remote_file')) {
 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-			$output = curl_exec($ch);
+			$content = curl_exec($ch);
 
 			curl_close($ch);
 
 			if ($cache) {
 
-				file_put_contents($cache, $output);
+				file_put_contents($cache, $content);
 
 			}
 
 		} else {
 
-			$output = file_get_contents($cache);
+			$content = file_get_contents($cache);
 
 		}
 
-		return $output;
+		return $content;
 
 	}
 
@@ -915,6 +915,31 @@ if (!class_exists('DOM')) {
 			$element->appendXML($string);
 
 			return $element;
+
+		}
+
+		/**
+		 * innerHTML
+		 * Returns the inner HTML of the specified node.
+		 * @method string DOM::innerHTML (object $object);
+		 * @param object $object
+		 * @return string
+		 * @example echo $DOM->innerHTML($node);
+		 * @author Neo Geek <neo@neo-geek.net>
+		 * @copyright Copyright (c) 2013, Neo Geek
+		 */
+
+		final public function innerHTML ($object) {
+
+			$output = '';
+
+			foreach ($object->childNodes as $node) {
+
+				$output .= $this->saveHTML($node);
+
+			}
+
+			return $output;
 
 		}
 
