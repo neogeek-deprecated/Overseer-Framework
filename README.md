@@ -294,7 +294,13 @@ echo sha('encode');
 echo sha('encode.txt', 'sha1');
 ```
 
-<h2>##Classes</h2><h3>###DOM</h3><p>Extends the built in PHP DOMDocument class.</p>###$DOM->create()
+##Classes
+
+###DOM
+
+Extends the built in PHP DOMDocument class.
+
+###$DOM->create()
 
 Creates an HTML DOM element with content and attributes utilizing only one function call.
 
