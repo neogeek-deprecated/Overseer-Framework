@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
 
- Overseer Framework, build 2, 2013-04-01
+ Overseer Framework, build 3, 2013-04-01
  http://overseerframework.com/
 
  Copyright (c) 2013 Neo Geek
@@ -42,6 +42,9 @@ if (!class_exists('Router')) {
 	class Router
 	{
 
+		private $base = '/';
+		private $routes = [];
+
 		final static function parsePath ($path) {
 
 			if (!isset($_SERVER['PATH_INFO'])) {
@@ -67,7 +70,7 @@ if (!class_exists('Router')) {
 
 		final private function request ($path, $func) {
 
-			$args = $this::parsePath($path);
+			$args = $this::parsePath($this->base . $path);
 
 			if ($args) {
 
@@ -103,7 +106,29 @@ if (!class_exists('Router')) {
 
 			if ($_SERVER['REQUEST_METHOD'] == strtoupper($name)) {
 
-				return call_user_func_array(array($this, 'request'), $arguments);
+				$this->routes[$arguments[0]] = $arguments;
+
+			}
+
+		}
+
+		final public function __construct ($base = '/') {
+
+			$this->base = $base;
+
+		}
+
+		final public function __destruct () {
+
+			krsort($this->routes);
+
+			foreach ($this->routes as $route) {
+
+				if (call_user_func_array(array($this, 'request'), $route)) {
+
+					return false;
+
+				}
 
 			}
 
