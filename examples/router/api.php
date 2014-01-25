@@ -47,8 +47,6 @@ $app->delete('/user/:int', function ($params) {
 	Router::setContentType('application/json');
 	Router::setStatus(200, 'OK');
 
-	parse_str(file_get_contents('php://input'), $_PUT);
-
 	die(json_encode(array('status'=>'OK', 'data'=>array())));
 
 });
