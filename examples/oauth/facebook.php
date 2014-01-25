@@ -3,6 +3,8 @@
 require('../../framework.php');
 require('../../oauth2.php');
 
+require('config.php');
+
 session_name('oauth2_example');
 session_start();
 

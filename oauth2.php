@@ -4,7 +4,7 @@
 
 /* ------------------------------------------------------------
 
- Overseer Framework, build 4, 2013-04-01
+ Overseer Framework, build 5, 2014-01-25
  http://overseerframework.com/
 
  Copyright (c) 2013 Neo Geek
@@ -51,6 +51,8 @@ if (!class_exists('OAuth2')) {
 
 		public $url_authorize;
 		public $url_access_token;
+
+		public $user_agent_string = 'OAuth2 Developer App';
 
 		/**
 		 * __construct
@@ -158,6 +160,12 @@ if (!class_exists('OAuth2')) {
 
 				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+			}
+
+			if ($this->user_agent_string) {
+
+				curl_setopt($ch,CURLOPT_USERAGENT, $this->user_agent_string);
 
 			}
 
