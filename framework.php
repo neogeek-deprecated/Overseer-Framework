@@ -4,10 +4,10 @@
 
 /* ------------------------------------------------------------
 
- Overseer Framework, build 91, 2013-06-13
+ Overseer Framework, build 92, 2014-01-30
  http://overseerframework.com/
 
- Copyright (c) 2013 Neo Geek
+ Copyright (c) 2014 Neo Geek
  Dual-licensed under both MIT and BSD licenses.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -40,7 +40,7 @@
  * @example check_referer();
  * @example check_referer('/contact/');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('check_referer')) {
@@ -76,7 +76,7 @@ if (!function_exists('check_referer')) {
  * @example fetch_remote_file('http://www.example.com/file.xml');
  * @example fetch_remote_file('http://www.example.com/file.xml', 'cache/file.xml', '1 hour ago');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('fetch_remote_file')) {
@@ -132,7 +132,7 @@ if (!function_exists('fetch_remote_file')) {
  * @example getbrowser();
  * @example getbrowser('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_4) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1')
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('getbrowser')) {
@@ -191,7 +191,7 @@ if (!function_exists('getbrowser')) {
  * @return array
  * @example getcsv('data.csv');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('getcsv')) {
@@ -221,7 +221,7 @@ if (!function_exists('getcsv')) {
  * @example markdown('#Headline');
  * @example markdown('file.md');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('markdown')) {
@@ -300,6 +300,28 @@ if (!function_exists('markdown')) {
 					$string = preg_replace('/\n>{1,}\s*/', ' ', $matches[2]);
 
 					return $matches[1] . '<blockquote>' . $string . '</blockquote>' . $matches[1];
+
+				}
+			),
+
+			// Code Blocks (Github Style)
+			array(
+				'regex' => '/(^|[\n]+)```([^\n]+)?(.+?)```([\n]+|$)/s',
+				'callback' => function ($matches) {
+
+					$string = htmlentities($matches[3]);
+
+					$string = preg_replace('/\n/', '&#010;', $string);
+
+					if ($matches[2]) {
+
+						return $matches[1] . '<pre class="' . $matches[2] . '">' . $string . '</pre>' . $matches[4];
+
+					} else {
+
+						return $matches[1] . '<pre>' . $string . '</pre>' . $matches[4];
+
+					}
 
 				}
 			),
@@ -454,7 +476,7 @@ if (!function_exists('markdown')) {
  * @example mysql_fetch_results('SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
  * @example mysql_fetch_results('UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('mysql_fetch_results')) {
@@ -509,7 +531,7 @@ if (!function_exists('mysql_fetch_results')) {
  * @example mysqli_fetch_results($mysqli, 'SELECT * FROM `user` WHERE `user_id` = 1 LIMIT 1');
  * @example mysqli_fetch_results($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = 1 LIMIT 1');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('mysqli_fetch_results')) {
@@ -575,7 +597,7 @@ if (!function_exists('mysqli_fetch_results')) {
  * @example mysqli_transaction($mysqli, 'SELECT * FROM `user` WHERE `user_id` = ? LIMIT 1', 'i', 1);
  * @example mysqli_transaction($mysqli, 'UPDATE `user` SET `last_logged_in` = NOW() WHERE `user_id` = ? LIMIT 1', 'i', 1);
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('mysqli_transaction')) {
@@ -676,7 +698,7 @@ if (!function_exists('mysqli_transaction')) {
  * @example echo path_info(1);
  * @example echo path_info(1, 'user/neogeek');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('path_info')) {
@@ -713,7 +735,7 @@ if (!function_exists('path_info')) {
  * @return void
  * @example print_array($results, $_POST);
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('print_array')) {
@@ -741,7 +763,7 @@ if (!function_exists('print_array')) {
  * @return integer
  * @example echo 'This script took ' . runtime(2) . ' millisecond(s) to run.';
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('runtime')) {
@@ -778,7 +800,7 @@ if (!function_exists('runtime')) {
  * @example echo sha('encode');
  * @example echo sha('encode.txt', 'sha1');
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!function_exists('sha')) {
@@ -801,7 +823,7 @@ if (!function_exists('sha')) {
  * DOM
  * Extends the built in PHP DOMDocument class.
  * @author Neo Geek <neo@neo-geek.net>
- * @copyright Copyright (c) 2013, Neo Geek
+ * @copyright Copyright (c) 2014, Neo Geek
  */
 
 if (!class_exists('DOM')) {
@@ -819,7 +841,7 @@ if (!class_exists('DOM')) {
 		 * @return object
 		 * @example $DOM->create('p', 'Lorem ipsum dolor sit amet.', array('class'=>'demo'));
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function create ($tag, $content = null, $attribs = array()) {
@@ -860,7 +882,7 @@ if (!class_exists('DOM')) {
 		 * @return object|boolean
 		 * @example $DOM->getElementById('test'));
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function getElementById ($id) {
@@ -899,7 +921,7 @@ if (!class_exists('DOM')) {
 		 * @return object
 		 * @example $DOM->appendChild($DOM->import('<h1>Hello World!</h1>'));
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function import ($string) {
@@ -926,7 +948,7 @@ if (!class_exists('DOM')) {
 		 * @return string
 		 * @example echo $DOM->innerHTML($node);
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function innerHTML ($object) {
@@ -952,7 +974,7 @@ if (!class_exists('DOM')) {
 		 * @return object|boolean
 		 * @example $DOM->nextSiblings($object, 5);
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function nextSiblings ($object, $num = 1) {
@@ -990,7 +1012,7 @@ if (!class_exists('DOM')) {
 		 * @return object
 		 * @example $DOM->prepend($DOM->create('div', 'test'), $node);
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function prepend ($object, $node) {
@@ -1007,7 +1029,7 @@ if (!class_exists('DOM')) {
 		 * @return object
 		 * @example $DOM->query('//div');
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function query ($query) {
@@ -1027,7 +1049,7 @@ if (!class_exists('DOM')) {
 		 * @example $DOM->remove($DOM->getElementById('demo'));
 		 * @example $DOM->remove($DOM->getElementById('demo')->getElementsByTagName('p'));
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function remove ($object) {
@@ -1061,7 +1083,7 @@ if (!class_exists('DOM')) {
 		 * @return object
 		 * @example $DOM->replace($DOM->create('select'), $DOM->getElementById('dropdown'));
 		 * @author Neo Geek <neo@neo-geek.net>
-		 * @copyright Copyright (c) 2013, Neo Geek
+		 * @copyright Copyright (c) 2014, Neo Geek
 		 */
 
 		final public function replace ($object, $node) {
